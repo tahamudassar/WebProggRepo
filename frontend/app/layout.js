@@ -12,12 +12,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       
-      <body >
+      <body className="overflow-y-scroll no-scrollbar">
      
           <Header />
-        <div className="flex items-center">
+        <div className="flex items-center overflow-y-scroll no-scrollbar">
           <Sidebar/>
-          <div className="flex-1 bg-[#0E1113] min-h-screen">
+          <div className="flex-1 bg-[#0E1113] min-h-screen overflow-y-scroll no-scrollbar">
             {children}
           </div>
         

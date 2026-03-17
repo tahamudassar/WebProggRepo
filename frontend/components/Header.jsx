@@ -1,6 +1,7 @@
 import React from "react";
 import { BellIcon, SearchIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 
 function Header() {
@@ -9,7 +10,7 @@ function Header() {
       {/* logo and name */}
       <div className="flex items-center space-x-2">
         <Image width={38} height={38} src='/logo.png' />
-        <h1 className=" text-lg">FASTLink</h1>
+        <Link href='/' className=" text-lg">FASTLink</Link>
       </div>
 
       {/* searchbar */}
@@ -19,7 +20,11 @@ function Header() {
       </div>
 
       {/* icons */}
-      <button className="px-2 cursor-pointer  hover:opacity-50">Login</button>
+      <div className="flex items-center space-x-2 text-sm">
+        <Link href='/signup' className="px-2 cursor-pointer  hover:opacity-50">Login</Link>
+        <Link href='/signup' className="px-2 cursor-pointer  hover:opacity-50 border p-1 rounded-md text-green-200">Register</Link>
+      </div>
+
     </div>
   );
 }
