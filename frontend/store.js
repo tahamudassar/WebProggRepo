@@ -1,10 +1,31 @@
-import {create} from 'zustand'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export const useUserData = create((set)=>({
-    user: {
-        name: "saad ali"
+export const useUserData = create(
+  persist(
+    (set) => ({
+      user: {
+        username: "",
+        email: "",
+      },
+      setUser: (userData) =>
+        set({
+          user: {
+            username: userData.username,
+            email: userData.email,
+          },
+        }),
+      clearUser: () => {
+        set({user:{
+            username: "",
+            email: ""
+        }})
+        localStorage.removeItem('user-storage');
     },
-    change: ()=>{
-        set((state)=>({name:state.user.name}))
+    }),
+    {
+      name: "user-storage", // Key for localStorage
+      getStorage: () => localStorage,
     }
-}))
+  )
+);

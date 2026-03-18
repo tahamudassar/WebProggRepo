@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUserData } from '@/store'
 
-function Signup() {
+function Login() {
     const [showPassword, setShowPassword] = useState(false)
     const [formData, setFormData] = useState({
       username: '',
@@ -60,7 +60,7 @@ function Signup() {
   return (
     <div className=' min-h-screen flex items-center justify-center  pb-14 overflow-y-scroll no-scrollbar'>
         <div className="bg-[#242623] rounded-lg shadow-lg p-8 border-2  w-1/2">
-          <h2 className="text-white text-3xl font-bold text-center">SIGN UP</h2>
+          <h2 className="text-white text-3xl font-bold text-center">LOG IN</h2>
           <form className="space-y-6 mt-6">
             <div>
               <label className="block text-gray-300">Username</label>
@@ -117,4 +117,4 @@ function Signup() {
   )
 }
 
-export default Signup
+export default Login

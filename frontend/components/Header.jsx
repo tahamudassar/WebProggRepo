@@ -4,12 +4,23 @@ import { BellIcon, SearchIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useUserData } from "@/store";
+import { useRouter } from 'next/navigation'
 
 
 function Header() {
-  const {user} = useUserData((state)=>state)
-  const changeUser = useUserData((state)=>state.change)
-  console.log(user.name)
+  const user = useUserData((state)=>state.user)
+  const clearUser = useUserData((state)=>state.clearUser)
+  const router = useRouter()
+
+  useEffect(()=>{
+    console.log(user)
+  }, [user])
+
+  const handleLogout = (e)=>{
+    e.preventDefault();
+    clearUser();
+  }
+  
 
   return (
     <div className="flex items-center justify-between  bg-[#0E1113] text-white p-2 border-b-1 border-gray-700">
@@ -25,12 +36,25 @@ function Header() {
        <input placeholder="Search FASTLink" className="w-full bg-[#576970] focus:outline-none text-sm"/>
       </div>
 
+      
+      
+
       {/* icons */}
-      <div className="flex items-center space-x-2 text-sm">
-        <Link href='/signup' className="px-2 cursor-pointer  hover:opacity-50">Login</Link>
+
+      {
+        user.username ? (
+          <div className="flex items-center space-x-2 text-sm">
+        <button onClick={handleLogout} className="px-2 cursor-pointer  hover:opacity-50">Logout</button>
+        <Link href='/signup' className="px-2 cursor-pointer  hover:opacity-50 border p-1 rounded-md text-green-200">{user.username}</Link>
+      </div>
+        ) : (
+          <div className="flex items-center space-x-2 text-sm">
+        <Link href='/login' className="px-2 cursor-pointer  hover:opacity-50">Login</Link>
         <Link href='/signup' className="px-2 cursor-pointer  hover:opacity-50 border p-1 rounded-md text-green-200">Register</Link>
       </div>
-
+        )
+      }
+      
     </div>
   );
 }
