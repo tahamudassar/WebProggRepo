@@ -6,7 +6,6 @@ import { useUserData } from '@/store'
 function Login() {
     const [showPassword, setShowPassword] = useState(false)
     const [formData, setFormData] = useState({
-      username: '',
       email: '',
       password: '',
     })
@@ -25,7 +24,7 @@ function Login() {
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-        const response = await fetch('http://localhost:8000/api/register/', {
+        const response = await fetch('http://localhost:8000/api/token/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -33,14 +32,14 @@ function Login() {
           body: JSON.stringify(formData),
         });
   
-        if (response.status == 201) {
-          console.log('Signup successful');
+        if (response.ok) {
+          console.log('login successful');
           const data = await response.json()
           console.log(data)
           //save user data in the store
           setUser({
-            username: data.user.username,
-            email: data.user.email
+            username: data.username,
+            email: data.email
           })
 
 
@@ -60,19 +59,8 @@ function Login() {
   return (
     <div className=' min-h-screen flex items-center justify-center  pb-14 overflow-y-scroll no-scrollbar'>
         <div className="bg-[#242623] rounded-lg shadow-lg p-8 border-2  w-1/2">
-          <h2 className="text-white text-3xl font-bold text-center">LOG IN</h2>
+          <h2 className="text-white text-3xl font-bold text-center">Welcome Back</h2>
           <form className="space-y-6 mt-6">
-            <div>
-              <label className="block text-gray-300">Username</label>
-              <input
-                type="text"
-                name='username'
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="MazharHussain69xx"
-                className="w-full bg-gray-700 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
             <div>
               <label className="block text-gray-300">Email</label>
               <input
@@ -109,7 +97,7 @@ function Login() {
               className="w-full bg-black text-green-900 py-2 rounded-md font-semibold hover:bg-gray-700 hover:text-green-300"
               onClick={handleSubmit}
             >
-              Create Account
+              Login
             </button>
           </form>
         </div>
