@@ -62,31 +62,41 @@ class Post(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
-
+    link_url = models.URLField(blank=True, null=True)
+    image_url = models.URLField(blank=True, null=True)  
     class Meta:
         abstract = False  # This makes it an abstract base class
 
     def __str__(self):
         return f"Post by {self.user.username} in {self.community.name}"
 
-# Link Post model
-class LinkPost(Post):
-    link_url = models.URLField()
+
+class StudyPost(Post):
+    main_topic = models.CharField(max_length=255)
+    question_asked = models.TextField()
 
     def __str__(self):
-        return f"Link Post: {self.link_url}"
+        return f"StudyPost: {self.title}"
 
-# Image Post model
-class ImagePost(Post):
-    image_url = models.URLField()
+class BloodDonationPost(Post):
+    blood_type_required = models.CharField(max_length=3)  # e.g., A+, B-
+    required_within = models.CharField(max_length=50)  # e.g., "1 week"
+    urgency = models.CharField(
+        max_length=20,
+        choices=[("Low", "Low"), ("Medium", "Medium"), ("High", "High")],
+        default="Medium",
+    )
 
     def __str__(self):
-        return f"Image Post: {self.image_url}"
+        return f"BloodDonationPost: {self.title}"
 
-# Text Post model
-class TextPost(Post):
+class CarpoolPost(Post):
+    capacity = models.PositiveIntegerField()
+    from_location = models.CharField(max_length=255)
+    to_location = models.CharField(max_length=255)
+
     def __str__(self):
-        return f"Text Post: {self.content[:30]}..."  
+        return f"CarpoolPost: {self.title}" 
 
 
 class Comment(models.Model):
