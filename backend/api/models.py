@@ -29,8 +29,8 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    email = models.CharField(max_length=80, unique=True)
-    username = models.CharField(max_length=45)
+    email = models.CharField(max_length=80, unique=True,null=False,blank=False)
+    username = models.CharField(max_length=45,null=False,blank=False)
     date_of_birth = models.DateField(null=True)
     profile_image = models.URLField(null=True, blank=True)  # New field for profile image URL
     ROLE_CHOICES = [
@@ -49,7 +49,7 @@ class User(AbstractUser):
 
 class Community(models.Model):
     community_id = models.AutoField(primary_key=True)  # Unique identifier for each community
-    name = models.CharField(max_length=100, unique=True)  # Name of the community
+    name = models.CharField(max_length=100, unique=True,null=False,blank=False)  # Name of the community
     description = models.TextField()  # Brief description of the community
 
     def __str__(self):
@@ -72,14 +72,14 @@ class Post(models.Model):
 
 
 class StudyPost(Post):
-    main_topic = models.CharField(max_length=255)
-    question_asked = models.TextField()
+    main_topic = models.CharField(max_length=255,null=False,blank=False)
+    question_asked = models.TextField(null=False,blank=False)
 
     def __str__(self):
-        return f"StudyPost: {self.title}"
+        return self.main_topic 
 
 class BloodDonationPost(Post):
-    blood_type_required = models.CharField(max_length=3)  # e.g., A+, B-
+    blood_type_required = models.CharField(max_length=3,null=False,blank=False)  # e.g., A+, B-
     required_within = models.CharField(max_length=50)  # e.g., "1 week"
     urgency = models.CharField(
         max_length=20,
@@ -88,22 +88,22 @@ class BloodDonationPost(Post):
     )
 
     def __str__(self):
-        return f"BloodDonationPost: {self.title}"
+        return f"BloodDonationPost: {self.blood_type_required} blood needed urgently"
 
 class CarpoolPost(Post):
-    capacity = models.PositiveIntegerField()
-    from_location = models.CharField(max_length=255)
-    to_location = models.CharField(max_length=255)
+    capacity = models.PositiveIntegerField(null=False,blank=False)
+    from_location = models.CharField(max_length=255,null=False,blank=False)
+    to_location = models.CharField(max_length=255,null=False,blank=False)
 
     def __str__(self):
-        return f"CarpoolPost: {self.title}" 
+        return f"CarpoolPost: {self.from_location} to {self.to_location}" 
 
 
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE,null=True)  # This will reference the concrete Post tables
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(null=False,blank=False)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

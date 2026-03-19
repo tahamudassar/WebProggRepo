@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from api.models import User 
+from api.models import User
+from api.models import StudyPost, BloodDonationPost, CarpoolPost 
 from django.core.exceptions import ValidationError 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -49,3 +50,34 @@ class RegisterSerializer(serializers.ModelSerializer):
         #Token.objects.create(user=user)
 
         return user
+    
+
+class StudyPostSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StudyPost
+        fields = "__all__"
+
+    def get_type(self, obj):
+        return "study"
+
+class BloodDonationPostSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BloodDonationPost
+        fields = "__all__"
+
+    def get_type(self, obj):
+        return "blood-donation"
+
+class CarpoolPostSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CarpoolPost
+        fields = "__all__"
+
+    def get_type(self, obj):
+        return "carpool"
