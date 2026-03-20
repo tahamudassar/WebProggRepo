@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import "./globals.css";
-import {NextUIProvider} from "@nextui-org/system";
+import { NextUIProvider } from "@nextui-org/system";
 import Sidebar from "@/components/Sidebar";
 
 export const metadata = {
@@ -11,19 +11,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      
       <body className="overflow-y-scroll no-scrollbar">
-     
-          <Header />
+        <Header />
         <div className="flex items-center overflow-y-scroll no-scrollbar">
-          <Sidebar/>
+          <Sidebar />
           <div className="flex-1 bg-[#0E1113] min-h-screen overflow-y-scroll no-scrollbar">
             {children}
           </div>
-        
         </div>
       </body>
-      
     </html>
   );
 }

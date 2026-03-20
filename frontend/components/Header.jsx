@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { BellIcon, SearchIcon } from "lucide-react";
+import { BellIcon, Plus, PlusIcon, SearchIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useUserData } from "@/store";
@@ -19,6 +19,11 @@ function Header() {
   const handleLogout = (e)=>{
     e.preventDefault();
     clearUser();
+  }
+
+  const handleCreatePost = (e)=>{
+    e.preventDefault()
+    router.push('/createPost')
   }
   
 
@@ -44,8 +49,12 @@ function Header() {
       {
         user.username ? (
           <div className="flex items-center space-x-2 text-sm">
+        <button onClick={handleCreatePost} className="flex items-center space-x-1">
+          <PlusIcon className="w-5 h-5" />
+          <span>Create</span>
+        </button>
         <button onClick={handleLogout} className="px-2 cursor-pointer  hover:opacity-50">Logout</button>
-        <Link href='/signup' className="px-2 cursor-pointer  hover:opacity-50 border p-1 rounded-md text-green-200">{user.username}</Link>
+        <button className="px-2 cursor-pointer  hover:opacity-50 border p-1 rounded-md text-green-200">{user.username}</button>
       </div>
         ) : (
           <div className="flex items-center space-x-2 text-sm">
