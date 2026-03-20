@@ -32,7 +32,7 @@ class User(AbstractUser):
     email = models.CharField(max_length=80, unique=True,null=False,blank=False)
     username = models.CharField(max_length=45,null=False,blank=False)
     date_of_birth = models.DateField(null=True)
-    profile_image = models.URLField(null=True, blank=True)  # New field for profile image URL
+    profile_image = models.ImageField(upload_to='profile_images/',null=True, blank=True)  # New field for profile image URL
     ROLE_CHOICES = [
         ("admin", "Admin"),
         ("user", "User"),
@@ -63,7 +63,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
     link_url = models.URLField(blank=True, null=True)
-    image_url = models.URLField(blank=True, null=True)  
+    image_url = models.ImageField(upload_to='post_images/',blank=True, null=True)  
     class Meta:
         abstract = False  # This makes it an abstract base class
 
