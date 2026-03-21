@@ -43,7 +43,9 @@ function Login() {
           })
 
 
-
+          // Save the access token to localStorage
+          localStorage.setItem('accessToken', data.access);  // Store access token
+          localStorage.setItem('refreshToken', data.refresh);  // Store refresh token
           router.push("/")
 
           

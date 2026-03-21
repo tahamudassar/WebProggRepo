@@ -4,7 +4,7 @@ import { CardFooter } from "@/components/ui/card";
 function CustomCardFooter({ buttontext = "Ask Now" }) {
   return (
     <CardFooter>
-      <Button>{buttontext}</Button>
+      <Button type="submit">{buttontext}</Button>
     </CardFooter>
   );
 }

@@ -19,6 +19,9 @@ function Header() {
   const handleLogout = (e)=>{
     e.preventDefault();
     clearUser();
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    router.push('/login')
   }
 
   const handleCreatePost = (e)=>{
