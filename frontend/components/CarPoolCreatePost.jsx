@@ -15,12 +15,34 @@ function CarPool() {
       <CardContent className="space-y-2">
         <div className="flex items-center justify-center gap-4">
           <div className="space-y-1 w-full">
-            <Label htmlFor="name">Pickup Point</Label>
-            <Input id="name" defaultValue="Pedro Duarte" />
+            <Label htmlFor="pickup">Pickup Point</Label>
+            <Input id="pickup" defaultValue="Bahawalpur" />
           </div>
           <div className="space-y-1 w-full">
-            <Label htmlFor="username">Dropoff Point</Label>
-            <Input id="username" defaultValue="@peduarte" />
+            <Label htmlFor="dropoff">Dropoff Point</Label>
+            <Input id="dropoff" defaultValue="Siraiki Town" />
+          </div>
+        </div>
+        <div className="flex items-center justify-center gap-4">
+          <div className="space-y-1 w-full">
+            <Label htmlFor="picktime">Pickup Time</Label>
+              <input
+                id="picktime"
+                type="datetime-local"
+                className="w-full bg-gray-700 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+          </div>
+          <div className="space-y-1 w-full">
+            <label htmlFor="gender"  
+            className="block text-black-300 font-semibold">Gender</label>
+            <select
+              id="gender"
+              className="w-full bg-gray-700 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
           </div>
         </div>
       </CardContent>

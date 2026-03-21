@@ -59,7 +59,6 @@ class Post(models.Model):
     post_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post_type = models.CharField(max_length=10, choices=[('link', 'Link'), ('image', 'Image'), ('text', 'Text')])
-    content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
     link_url = models.URLField(blank=True, null=True)
@@ -92,9 +91,10 @@ class BloodDonationPost(Post):
 
 class CarpoolPost(Post):
     capacity = models.PositiveIntegerField(null=False,blank=False)
-    from_location = models.CharField(max_length=255,null=False,blank=False)
-    to_location = models.CharField(max_length=255,null=False,blank=False)
-
+    dropoff_point = models.CharField(max_length=255,null=False,blank=False)
+    pickup_point = models.CharField(max_length=255,null=False,blank=False)
+    pickup_time = models.DateTimeField(max_length=255,null=False,blank=False)
+    preferred_gender = models.CharField(max_length=255,null=False,blank=False)
     def __str__(self):
         return f"CarpoolPost: {self.from_location} to {self.to_location}" 
 
