@@ -14,7 +14,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['role'] = user.role  
         data['username'] = user.username  
         data['email'] = user.email  
-        data['profile_image'] = user.profile_image 
+        # data['profile_image'] = user.profile_image 
 
         return data
 

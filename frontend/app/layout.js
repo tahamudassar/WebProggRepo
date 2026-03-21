@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import "./globals.css";
-import { NextUIProvider } from "@nextui-org/system";
 import Sidebar from "@/components/Sidebar";
+import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata = {
   title: "Create Next App",
@@ -12,13 +12,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="overflow-y-scroll no-scrollbar">
-        <Header />
-        <div className="flex items-center overflow-y-scroll no-scrollbar">
-          <Sidebar />
-          <div className="flex-1 bg-[#0E1113] min-h-screen overflow-y-scroll no-scrollbar">
-            {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange>
+
+          <Header />
+          <div className="flex items-center overflow-y-scroll no-scrollbar">
+            <Sidebar />
+            <div className="flex-1 bg-[#0E1113] min-h-screen overflow-y-scroll no-scrollbar">
+              {children}
+            </div>
           </div>
-        </div>
+        </ThemeProvider>
       </body>
     </html>
   );

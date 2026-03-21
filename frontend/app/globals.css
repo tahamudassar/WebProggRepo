@@ -56,13 +56,15 @@
     --chart-5: 340 75% 55%
   }
 }
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+
+
+:root {
+  --bg-color: #262729;
+  --white: #ffffff;
+}
+
+.bg-color{
+  background-color: var(--bg-color);
 }
 
 

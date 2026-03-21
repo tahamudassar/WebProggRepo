@@ -48,7 +48,8 @@ function Login() {
 
           
         } else {
-          console.error('Signup failed');
+
+          console.error('Loginup failed');
           // Handle failure
         }
       } catch (error) {
