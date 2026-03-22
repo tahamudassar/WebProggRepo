@@ -1,9 +1,14 @@
-// app/page.js
+import DefaultLayout from "@/components/DefaultLayout";
+import DisplayPosts from "@/components/DisplayPosts";
 
-export default function Page() {
+
+export default function Home() {
   return (
-    <div>
-      <h1>Lets go</h1>
-    </div>
+    <DefaultLayout>
+      <div className="relative w-full text-purple-400 mt-10 px-5">
+        <DisplayPosts/>
+      </div>
+    </DefaultLayout>
   );
 }
+
