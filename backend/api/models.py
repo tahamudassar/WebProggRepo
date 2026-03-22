@@ -58,11 +58,11 @@ class Community(models.Model):
 class Post(models.Model):
     post_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post_type = models.CharField(max_length=10, choices=[('link', 'Link'), ('image', 'Image'), ('text', 'Text')])
+    #post_type = models.CharField(max_length=10, choices=[('link', 'Link'), ('image', 'Image'), ('text', 'Text')])
     created_at = models.DateTimeField(default=timezone.now)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
     link_url = models.URLField(blank=True, null=True)
-    image_url = models.ImageField(upload_to='post_images/',blank=True, null=True)  
+    image_url = models.URLField(blank=True, null=True)  
     class Meta:
         abstract = False  # This makes it an abstract base class
 

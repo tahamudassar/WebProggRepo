@@ -6,18 +6,122 @@ from api.serializers import CustomTokenObtainPairSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from api.serializers import RegisterSerializer
 from .models import StudyPost, CarpoolPost, BloodDonationPost
-from .serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer
-
+from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer, RegisterSerializer,CreateCarPoolPostSerializer,CreateStudyPostSerializer
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import StudyPost, Community, User
+from django.core.files.storage import FileSystemStorage
+from django.utils import timezone
+import json
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
+class CreateCarPoolPost(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract data from the request
+            community_name = request.data.get("community")
+            pickup_point = request.data.get("pickup_point")
+            dropoff_point = request.data.get("dropoff_point")
+            pick_time = request.data.get("pickup_time")
+            gender = request.data.get("preferred_gender")
+            capacity = request.data.get("capacity")
+            # Validate input
+            if not community_name or not pickup_point or not dropoff_point or not pick_time:
+                return Response({"error": "Community, pickup point, dropoff point, and pickup time are required."}, status=400)
 
-@api_view(['GET'])
-def hello_world(request):
-    return Response({"message": "Hello, World!"})
+            # Get the community object
+            try:
+                community = Community.objects.get(name=community_name)
+            except Community.DoesNotExist:
+                return Response({"error": "Community not found."}, status=400)
+
+            # Get the currently authenticated user (if available)
+            user = request.user if request.user.is_authenticated else None
+            if not user:
+                return Response({"error": "User is not authenticated."}, status=403)
+
+            # Create the CarPoolPost data
+            carpool_post_data = {
+                "user": user.id,  # Pass the user's ID (pk)
+                "community": community.community_id,  # Pass the community's ID (pk)
+                "pickup_point": pickup_point,
+                "dropoff_point": dropoff_point,
+                "pickup_time": pick_time,
+                "preferred_gender": gender,
+                "created_at": timezone.now(),
+                "capacity": capacity
+            }
+
+            # Serialize data
+            serializer = CarpoolPostSerializer(data=carpool_post_data)
+
+            if serializer.is_valid():
+                # Save the carpool post to the database
+                serializer.save()
+
+                # Return success response
+                return Response({"message": "Carpool post created successfully!"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"error": "Invalid data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CreateStudyPost(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract data from request
+            community_name = request.data.get("community")
+            study_title = request.data.get("studytitle")
+            study_question = request.data.get("studyquestion")
+            question_link = request.data.get("questionlink")
+            image_url = request.data.get("questionimage")  # Expecting a URL for image
+
+            # Validate input
+            if not community_name or not study_title or not study_question:
+                return Response({"error": "Community, title, and question are required."}, status=400)
+
+            # Get the community object
+            try:
+                community = Community.objects.get(name=community_name)
+            except Community.DoesNotExist:
+                return Response({"error": "Community not found."}, status=400)
+
+            # Get the currently authenticated user (if available)
+            user = request.user if request.user.is_authenticated else None
+            if not user:
+                return Response({"error": "User is not authenticated."}, status=403)
+
+            # Create the StudyPost data
+            study_post_data = {
+                "user": user.id,  # Pass the user's ID (pk)
+                "community": community.community_id,  # Pass the community's ID (pk)
+                "main_topic": study_title,
+                "question_asked": study_question,
+                "link_url": question_link if question_link else None,
+                "image_url": image_url if image_url else None,
+                "created_at": timezone.now()
+            }
+
+            # Serialize data
+            serializer = StudyPostSerializer(data=study_post_data)
+
+            if serializer.is_valid():
+                # Save the study post to the database
+                serializer.save()
+
+                # Return success response
+                return Response({"message": "Study post created successfully!"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"error": "Invalid data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class RegisterView(APIView):

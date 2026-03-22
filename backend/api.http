@@ -1,10 +1,10 @@
 
 ### 
-POST http://localhost:8000/api/login/ HTTP/1.1
+POST http://localhost:8000/api/token/ HTTP/1.1
 Content-Type: application/json
 
 {
-	"email": "test@gmail.com",
+	"email": "pain",
 	"password": "123456789012"
 }
 
@@ -21,9 +21,9 @@ POST http://localhost:8000/api/register/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "username": "ronaldo",
-    "email": "ron@example.com",
-    "password": "strong123456"
+    "username": "pain",
+    "email": "pain",
+    "password": "123456789012"
 }
 
 ###
@@ -31,3 +31,22 @@ GET http://localhost:8000/api/posts/study/ HTTP/1.1
 
 ###
 GET http://localhost:8000/api/posts/carpool/ HTTP/1.1
+
+###
+GET http://localhost:8000/api/posts/blood-donation/ HTTP/1.1
+
+###
+GET http://localhost:8000/api/posts/latest/ HTTP/1.1
+
+
+POST http://localhost:8000/api/createStudyPost HTTP/1.1
+Content-Type: application/json
+
+{
+    "community": "Study Guide",
+    "studytitle": "Calculus 101",
+    "studyquestion": "What is the derivative of sin(x)?",
+    "questionlink": "http://math.com/problem1",
+    "questionimage": "http://math.com/images/problem1.jpg"
+}
+

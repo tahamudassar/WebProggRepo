@@ -1,9 +1,19 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from api.models import User
-from api.models import StudyPost, BloodDonationPost, CarpoolPost 
+from api.models import User,StudyPost, BloodDonationPost, CarpoolPost 
 from django.core.exceptions import ValidationError 
+from datetime import datetime
 
+class CreateCarPoolPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarpoolPost
+        fields = ['user', 'community', 'pickup_point', 'dropoff_point', 'pickup_time', 'preferred_gender', 'created_at']
+
+
+class CreateStudyPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudyPost
+        fields = ['user', 'community', 'main_topic', 'question_asked', 'link_url', 'image_url']
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         # Call the parent class validate method to get the token data
@@ -78,6 +88,11 @@ class CarpoolPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarpoolPost
         fields = "__all__"
+
+    def validate_pickup_time(self, value):
+        if not isinstance(value, datetime):
+            raise serializers.ValidationError("Invalid datetime format for pickup_time.")
+        return value
 
     def get_type(self, obj):
         return "carpool"
