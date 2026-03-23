@@ -82,7 +82,7 @@ class BloodDonationPost(Post):
     required_within = models.CharField(max_length=50)  # e.g., "1 week"
     urgency = models.CharField(
         max_length=20,
-        choices=[("Low", "Low"), ("Medium", "Medium"), ("High", "High")],
+        choices=[("Low", "low"), ("Medium", "medium"), ("High", "high")],
         default="Medium",
     )
 
