@@ -6,8 +6,8 @@ from api.serializers import CustomTokenObtainPairSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import StudyPost, CarpoolPost, BloodDonationPost
-from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer, RegisterSerializer
+from .models import StudyPost, CarpoolPost, BloodDonationPost, Post
+from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer,RegisterSerializer, CommentSerializer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import StudyPost, Community, User
@@ -266,3 +266,67 @@ class BloodDonationPostListView(APIView):
             )
         serializer = BloodDonationPostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+
+class CreateComment(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract data from the request
+            post_id = request.data.get("post_id")
+            content = request.data.get("content")
+
+            # Validate input
+            if not post_id or not content:
+                return Response(
+                    {"error": "Post ID and content are required."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Get the Post object
+            try:
+                post = Post.objects.get(post_id=post_id)
+            except Post.DoesNotExist:
+                return Response(
+                    {"error": "Post not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # Get the currently authenticated user
+            user = request.user if request.user.is_authenticated else None
+            if not user:
+                return Response(
+                    {"error": "User is not authenticated."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            # Create the Comment object
+            comment_data = {
+                "post": post.post_id,  
+                "user": user.id,          
+                "content": content,
+                "created_at": timezone.now()
+            }
+
+            # Serialize the data
+            serializer = CommentSerializer(data=comment_data)
+            if serializer.is_valid():
+                # Save the comment to the database
+                serializer.save()
+                return Response(
+                    {"message": "Comment created successfully!"},
+                    status=status.HTTP_201_CREATED
+                )
+            else:
+                return Response(
+                    {"error": "Invalid data", "details": serializer.errors},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+

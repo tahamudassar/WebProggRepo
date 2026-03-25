@@ -97,7 +97,7 @@ class CarpoolPost(Post):
 
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE,null=True)  # This will reference the concrete Post tables
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)  
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(null=False,blank=False)
     created_at = models.DateTimeField(default=timezone.now)

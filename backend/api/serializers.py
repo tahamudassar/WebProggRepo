@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from api.models import User,StudyPost, BloodDonationPost, CarpoolPost 
+from api.models import User,StudyPost, BloodDonationPost, CarpoolPost, Comment 
 from django.core.exceptions import ValidationError 
 from datetime import datetime
 
@@ -96,3 +96,19 @@ class CarpoolPostSerializer(serializers.ModelSerializer):
 
     def get_type(self, obj):
         return "carpool"
+
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['comment_id', 'post', 'user', 'content', 'created_at']
+        read_only_fields = ['comment_id', 'created_at']
+
+    def validate_content(self, value):
+        """
+        Custom validation for the content field.
+        """
+        if not value.strip():
+            raise serializers.ValidationError("Comment content cannot be empty or whitespace.")
+        return value
