@@ -61,4 +61,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
     "content": "This is a test comment."
 }
 
+###
+POST http://localhost:8000/api/createLike/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyNTY3OTIxLCJpYXQiOjE3MzI1NjA3MjEsImp0aSI6IjBhYTAwMjYzN2E5NjRkNjk4MDQ2ZGExZTA4ZDgzNmZiIiwidXNlcl9pZCI6N30.Q5jPbaUpUtElbDEmpv5Po9YpYKgMBgxyyI5dwGUDAeQ
+
+{
+    "post_id": 14
+}
+
+
 

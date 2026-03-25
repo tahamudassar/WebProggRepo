@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from .views import RegisterView
-from .views import LatestPostsView, StudyPostListView, BloodDonationPostListView, CarpoolPostListView, CreateStudyPost, CreateCarPoolPost, CreateBloodDonationPost,CreateComment
+from .views import LatestPostsView, StudyPostListView, BloodDonationPostListView, CarpoolPostListView, CreateStudyPost, CreateCarPoolPost, CreateBloodDonationPost,CreateComment, CreateLike
 
 urlpatterns = [
     #path('hello/', views.hello_world),
@@ -26,4 +26,5 @@ urlpatterns = [
     path('createCarpoolPost', CreateCarPoolPost.as_view(), name='create_carpool_post'),
     path('createBloodDonationPost', CreateBloodDonationPost.as_view(), name='create_blood_donation_post'),
     path('createComment/', CreateComment.as_view(), name='comments'),
+    path('createLike/', CreateLike.as_view(), name='likes'),
 ]

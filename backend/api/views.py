@@ -6,7 +6,7 @@ from api.serializers import CustomTokenObtainPairSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import StudyPost, CarpoolPost, BloodDonationPost, Post
+from .models import StudyPost, CarpoolPost, BloodDonationPost, Post, Like, Comment
 from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer,RegisterSerializer, CommentSerializer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -330,3 +330,34 @@ class CreateComment(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+
+
+class CreateLike(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract post_id and user_id from the request
+            post_id = request.data.get('post_id')
+
+            # Validate input
+            user = request.user if request.user.is_authenticated else None
+            if not user:
+                return Response({"error": "User is not authenticated."}, status=status.HTTP_403_FORBIDDEN)
+
+            # Check if the post exists
+            try:
+                post = Post.objects.get(post_id=post_id)
+            except Post.DoesNotExist:
+                return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            # Check if the like already exists
+            if Like.objects.filter(post_id=post, user_id=user).exists():
+                return Response({"error": "Like already exists for this user and post."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Create and save the like
+            like = Like(post_id=post, user_id=user, created_at=timezone.now())
+            like.save()
+
+            return Response({"message": "Like saved successfully!"}, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

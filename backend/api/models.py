@@ -28,7 +28,7 @@ class User(AbstractUser):
     email = models.CharField(max_length=80, unique=True,null=False,blank=False)
     username = models.CharField(max_length=45,null=False,blank=False)
     date_of_birth = models.DateField(null=True)
-    profile_image = models.ImageField(upload_to='profile_images/',null=True, blank=True)  # New field for profile image URL
+    profile_image = models.URLField(null=True, blank=True)  # New field for profile image URL
     ROLE_CHOICES = [
         ("admin", "Admin"),
         ("user", "User"),
@@ -109,8 +109,8 @@ class Comment(models.Model):
 
 class Like(models.Model):
     like_id = models.AutoField(primary_key=True)  # Unique identifier for each like
-    post_id = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='likes')  # Link to the liked post
-    user_id = models.ForeignKey('User', on_delete=models.CASCADE, related_name='likes')  # Link to the user who liked the post
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')  # Link to the liked post
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')  # Link to the user who liked the post
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for when the like was created
 
     def __str__(self):

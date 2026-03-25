@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from api.models import User,StudyPost, BloodDonationPost, CarpoolPost, Comment 
+from api.models import User,StudyPost, BloodDonationPost, CarpoolPost, Comment ,Like
 from django.core.exceptions import ValidationError 
 from datetime import datetime
 
@@ -112,3 +112,9 @@ class CommentSerializer(serializers.ModelSerializer):
         if not value.strip():
             raise serializers.ValidationError("Comment content cannot be empty or whitespace.")
         return value
+    
+
+    class LikeSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Like
+            fields = '__all__'
