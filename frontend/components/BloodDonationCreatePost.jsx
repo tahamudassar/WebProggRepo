@@ -8,7 +8,7 @@ import CustomCardFooter from "./CustomCardFooter";
 function BloodDonation({ community }) {
   const [formData, setFormData] = useState({
     bloodType: "A+", // Default value
-    urgency: "medium", // Default value
+    urgency: "Low", // Default value
     requiredWithin: "1", // Default value (1 week)
   });
 
@@ -52,7 +52,7 @@ function BloodDonation({ community }) {
         // Reset form after successful submission
         setFormData({
           bloodType: "A+",
-          urgency: "medium",
+          urgency: "Medium",
           requiredWithin: "1",
         });
       })

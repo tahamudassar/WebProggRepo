@@ -19,168 +19,99 @@ from rest_framework.permissions import IsAuthenticated
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
-class CreateBloodDonationPost(APIView):
+class BaseCreatePostView(APIView):
+    model = None
+    serializer_class = None
+    required_fields = []
+    post_data_mapping = {}
+    no_community_error = "Community not found."
+    auth_error = "User is not authenticated."
+
     def post(self, request, *args, **kwargs):
         try:
-            # Extract data from the request
-            community_name = request.data.get("community")
-            blood_type_required = request.data.get("blood_type_required")
-            required_within = request.data.get("required_within")
-            urgency = request.data.get("urgency")
-
-            # Validate required fields
-            if not community_name or not blood_type_required or not required_within:
-                return Response(
-                    {"error": "Community, blood type, and required within are mandatory fields."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+            # Validate that required fields are present
+            for field in self.required_fields:
+                if not request.data.get(field):
+                    return Response(
+                        {"error": f"{field} is a required field."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
             # Get the community object
+            community_name = request.data.get("community")
             try:
                 community = Community.objects.get(name=community_name)
             except Community.DoesNotExist:
-                return Response({"error": "Community not found."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": self.no_community_error}, status=status.HTTP_400_BAD_REQUEST)
 
             # Ensure the user is authenticated
             user = request.user if request.user.is_authenticated else None
             if not user:
-                return Response({"error": "User is not authenticated."}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"error": self.auth_error}, status=status.HTTP_403_FORBIDDEN)
 
-            # Prepare data for serialization
-            blood_donation_post_data = {
-                "user": user.id,  # User ID (pk)
-                "community": community.community_id,  # Community ID (pk)
-                "blood_type_required": blood_type_required,
-                "required_within": required_within,
-                "urgency": urgency,
-                "created_at": timezone.now()
+            # Map and prepare data for the serializer
+            post_data = {
+                field: request.data.get(source)
+                for field, source in self.post_data_mapping.items()
             }
+            post_data.update({
+                "user": user.id,  # Add user ID
+                "community": community.community_id,  # Add community ID
+                "created_at": timezone.now(),  # Add timestamp
+            })
 
-            # Serialize data
-            serializer = BloodDonationPostSerializer(data=blood_donation_post_data)
-
-            # Validate and save the serialized data
+            # Serialize and validate the data
+            serializer = self.serializer_class(data=post_data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(
-                    {"message": "Blood donation post created successfully!", "post": serializer.data},
-                    status=status.HTTP_201_CREATED
+                    {"message": f"{self.model.__name__} created successfully!", "post": serializer.data},
+                    status=status.HTTP_201_CREATED,
                 )
             else:
                 return Response(
                     {"error": "Invalid data", "details": serializer.errors},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
-class CreateCarPoolPost(APIView):
-    def post(self, request, *args, **kwargs):
-        try:
-            # Extract data from the request
-            community_name = request.data.get("community")
-            pickup_point = request.data.get("pickup_point")
-            dropoff_point = request.data.get("dropoff_point")
-            pick_time = request.data.get("pickup_time")
-            gender = request.data.get("preferred_gender")
-            capacity = request.data.get("capacity")
-            # Validate input
-            if not community_name or not pickup_point or not dropoff_point or not pick_time:
-                return Response({"error": "Community, pickup point, dropoff point, and pickup time are required."}, status=400)
-
-            # Get the community object
-            try:
-                community = Community.objects.get(name=community_name)
-            except Community.DoesNotExist:
-                return Response({"error": "Community not found."}, status=400)
-
-            # Get the currently authenticated user (if available)
-            user = request.user if request.user.is_authenticated else None
-            if not user:
-                return Response({"error": "User is not authenticated."}, status=403)
-
-            # Create the CarPoolPost data
-            carpool_post_data = {
-                "user": user.id,  # Pass the user's ID (pk)
-                "community": community.community_id,  # Pass the community's ID (pk)
-                "pickup_point": pickup_point,
-                "dropoff_point": dropoff_point,
-                "pickup_time": pick_time,
-                "preferred_gender": gender,
-                "created_at": timezone.now(),
-                "capacity": capacity
-            }
-
-            # Serialize data
-            serializer = CarpoolPostSerializer(data=carpool_post_data)
-
-            if serializer.is_valid():
-                # Save the carpool post to the database
-                serializer.save()
-
-                # Return success response
-                return Response({"message": "Carpool post created successfully!"}, status=status.HTTP_201_CREATED)
-            else:
-                return Response({"error": "Invalid data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+class CreateStudyPost(BaseCreatePostView):
+    model = StudyPost
+    serializer_class = StudyPostSerializer
+    required_fields = ["community", "studytitle", "studyquestion"]
+    post_data_mapping = {
+        "main_topic": "studytitle",
+        "question_asked": "studyquestion",
+        "link_url": "questionlink",
+        "image_url": "questionimage",
+    }
 
 
-class CreateStudyPost(APIView):
-    def post(self, request, *args, **kwargs):
-        try:
-            # Extract data from request
-            community_name = request.data.get("community")
-            study_title = request.data.get("studytitle")
-            study_question = request.data.get("studyquestion")
-            question_link = request.data.get("questionlink")
-            image_url = request.data.get("questionimage")  # Expecting a URL for image
+class CreateCarPoolPost(BaseCreatePostView):
+    model = CarpoolPost
+    serializer_class = CarpoolPostSerializer
+    required_fields = ["community", "pickup_point", "dropoff_point", "pickup_time"]
+    post_data_mapping = {
+        "pickup_point": "pickup_point",
+        "dropoff_point": "dropoff_point",
+        "pickup_time": "pickup_time",
+        "preferred_gender": "preferred_gender",
+        "capacity": "capacity",
+    }
 
-            # Validate input
-            if not community_name or not study_title or not study_question:
-                return Response({"error": "Community, title, and question are required."}, status=400)
 
-            # Get the community object
-            try:
-                community = Community.objects.get(name=community_name)
-            except Community.DoesNotExist:
-                return Response({"error": "Community not found."}, status=400)
-
-            # Get the currently authenticated user (if available)
-            user = request.user if request.user.is_authenticated else None
-            if not user:
-                return Response({"error": "User is not authenticated."}, status=403)
-
-            # Create the StudyPost data
-            study_post_data = {
-                "user": user.id,  # Pass the user's ID (pk)
-                "community": community.community_id,  # Pass the community's ID (pk)
-                "main_topic": study_title,
-                "question_asked": study_question,
-                "link_url": question_link if question_link else None,
-                "image_url": image_url if image_url else None,
-                "created_at": timezone.now()
-            }
-
-            # Serialize data
-            serializer = StudyPostSerializer(data=study_post_data)
-
-            if serializer.is_valid():
-                # Save the study post to the database
-                serializer.save()
-
-                # Return success response
-                return Response({"message": "Study post created successfully!"}, status=status.HTTP_201_CREATED)
-            else:
-                return Response({"error": "Invalid data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+class CreateBloodDonationPost(BaseCreatePostView):
+    model = BloodDonationPost
+    serializer_class = BloodDonationPostSerializer
+    required_fields = ["community", "blood_type_required", "required_within"]
+    post_data_mapping = {
+        "blood_type_required": "blood_type_required",
+        "required_within": "required_within",
+        "urgency": "urgency",
+    }
 
 
 class RegisterView(APIView):
@@ -232,42 +163,45 @@ class LatestPostsView(APIView):
 
         return Response(response_data, status=status.HTTP_200_OK)
 
+#Liskov and ISP
+class BasePostListView(APIView):
+    model = None
+    serializer_class = None
+    no_posts_message = "No posts available at the moment."
 
-class StudyPostListView(APIView):
     def get(self, request, *args, **kwargs):
-        posts = StudyPost.objects.all().order_by('-created_at')
-        if not posts.exists():  # Check if no posts exist
+        if not self.model or not self.serializer_class:
             return Response(
-                {"message": "No study posts available at the moment."},
-                status=status.HTTP_200_OK
+                {"error": "Model and serializer_class must be defined in the subclass."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        serializer = StudyPostSerializer(posts, many=True)
+        
+        # Fetch and order posts
+        posts = self.model.objects.all().order_by("-created_at")
+        if not posts.exists():
+            return Response(
+                {"message": self.no_posts_message},
+                status=status.HTTP_200_OK,
+            )
+        
+        # Serialize the data
+        serializer = self.serializer_class(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class StudyPostListView(BasePostListView):
+    model = StudyPost
+    serializer_class = StudyPostSerializer
+    no_posts_message = "No study posts available at the moment."
 
-class CarpoolPostListView(APIView):
-    def get(self, request, *args, **kwargs):
-        posts = CarpoolPost.objects.all().order_by('-created_at')
-        if not posts.exists():  # Check if no posts exist
-            return Response(
-                {"message": "No carpool posts available at the moment."},
-                status=status.HTTP_200_OK
-            )
-        serializer = CarpoolPostSerializer(posts, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class CarpoolPostListView(BasePostListView):
+    model = CarpoolPost
+    serializer_class = CarpoolPostSerializer
+    no_posts_message = "No carpool posts available at the moment."
 
-
-class BloodDonationPostListView(APIView):
-    def get(self, request, *args, **kwargs):
-        posts = BloodDonationPost.objects.all().order_by('-created_at')
-        if not posts.exists():  # Check if no posts exist
-            return Response(
-                {"message": "No blood donation posts available at the moment."},
-                status=status.HTTP_200_OK
-            )
-        serializer = BloodDonationPostSerializer(posts, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
+class BloodDonationPostListView(BasePostListView):
+    model = BloodDonationPost
+    serializer_class = BloodDonationPostSerializer
+    no_posts_message = "No blood donation posts available at the moment."
 
 
 
