@@ -7,13 +7,14 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import StudyPost, CarpoolPost, BloodDonationPost, Post, Like, Comment
-from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer,RegisterSerializer, CommentSerializer
+from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer, RegisterSerializer, CommentSerializer, ShareSerializer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import StudyPost, Community, User
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 import json
+from rest_framework.permissions import IsAuthenticated
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -270,67 +271,46 @@ class BloodDonationPostListView(APIView):
 
 
 
+class CreateShare(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data.copy()
+        data['user_id'] = request.user.id
+        serializer = ShareSerializer(data=data)
+        if serializer.is_valid():
+            try:
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 class CreateComment(APIView):
-    def post(self, request, *args, **kwargs):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
         try:
             # Extract data from the request
-            post_id = request.data.get("post_id")
-            content = request.data.get("content")
-
-            # Validate input
-            if not post_id or not content:
-                return Response(
-                    {"error": "Post ID and content are required."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Get the Post object
-            try:
-                post = Post.objects.get(post_id=post_id)
-            except Post.DoesNotExist:
-                return Response(
-                    {"error": "Post not found."},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-
-            # Get the currently authenticated user
-            user = request.user if request.user.is_authenticated else None
-            if not user:
-                return Response(
-                    {"error": "User is not authenticated."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-
-            # Create the Comment object
-            comment_data = {
-                "post": post.post_id,  
-                "user": user.id,          
-                "content": content,
-                "created_at": timezone.now()
-            }
-
-            # Serialize the data
-            serializer = CommentSerializer(data=comment_data)
+            data = request.data.copy()
+            data['user'] = request.user.id  # Add the authenticated user to the data
+            serializer = CommentSerializer(data=data)  # Pass the data to the serializer
+            
             if serializer.is_valid():
-                # Save the comment to the database
-                serializer.save()
-                return Response(
-                    {"message": "Comment created successfully!"},
-                    status=status.HTTP_201_CREATED
-                )
+                serializer.save()  # Save the valid comment
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(
                     {"error": "Invalid data", "details": serializer.errors},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
         except Exception as e:
             return Response(
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-
 
 class CreateLike(APIView):
     def post(self, request, *args, **kwargs):

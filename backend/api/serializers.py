@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from api.models import User,StudyPost, BloodDonationPost, CarpoolPost, Comment ,Like
+from api.models import User,StudyPost, BloodDonationPost, CarpoolPost, Comment ,Like, Share
 from django.core.exceptions import ValidationError 
 from datetime import datetime
 
@@ -114,7 +114,14 @@ class CommentSerializer(serializers.ModelSerializer):
         return value
     
 
-    class LikeSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Like
-            fields = '__all__'
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = '__all__'
+
+
+class ShareSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Share
+        fields = ['share_id', 'post_id', 'user_id', 'content', 'created_at']
+        read_only_fields = ['share_id', 'created_at']

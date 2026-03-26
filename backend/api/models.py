@@ -119,7 +119,8 @@ class Like(models.Model):
 class Share(models.Model):
     share_id = models.AutoField(primary_key=True)  # Unique identifier for each share
     post_id = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='shares')  # Link to the shared post
-    user_id = models.ForeignKey('User', on_delete=models.CASCADE, related_name='shares')  # Link to the user who shared the post
+    user_id = models.ForeignKey('User', on_delete=models.CASCADE, related_name='shares')
+    content = models.TextField(null=True,blank=True)  # Optional content to add to the share
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for when the share was created
 
     def __str__(self):
