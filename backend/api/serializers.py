@@ -4,16 +4,24 @@ from api.models import User,StudyPost, BloodDonationPost, CarpoolPost, Comment ,
 from django.core.exceptions import ValidationError 
 from datetime import datetime
 
-class CreateCarPoolPostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CarpoolPost
-        fields = ['user', 'community', 'pickup_point', 'dropoff_point', 'pickup_time', 'preferred_gender', 'created_at']
-
 
 class CreateStudyPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudyPost
         fields = ['user', 'community', 'main_topic', 'question_asked', 'link_url', 'image_url']
+        
+
+class StudyPostSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StudyPost
+        fields = "__all__"
+
+    def get_type(self, obj):
+        return "study"
+    
+            
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         # Call the parent class validate method to get the token data
@@ -62,16 +70,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
     
 
-class StudyPostSerializer(serializers.ModelSerializer):
-    type = serializers.SerializerMethodField()
-
-    class Meta:
-        model = StudyPost
-        fields = "__all__"
-
-    def get_type(self, obj):
-        return "study"
-
 class BloodDonationPostSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
 
@@ -81,6 +79,11 @@ class BloodDonationPostSerializer(serializers.ModelSerializer):
 
     def get_type(self, obj):
         return "blood-donation"
+
+class CreateCarPoolPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarpoolPost
+        fields = ['user', 'community', 'pickup_point', 'dropoff_point', 'pickup_time', 'preferred_gender', 'created_at']
 
 class CarpoolPostSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
