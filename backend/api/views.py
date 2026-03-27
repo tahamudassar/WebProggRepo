@@ -16,6 +16,8 @@ from django.utils import timezone
 import json
 from rest_framework.permissions import IsAuthenticated
 
+#solid principles to be implemented
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
