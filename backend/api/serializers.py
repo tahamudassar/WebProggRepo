@@ -128,3 +128,9 @@ class ShareSerializer(serializers.ModelSerializer):
         model = Share
         fields = ['share_id', 'post_id', 'user_id', 'content', 'created_at']
         read_only_fields = ['share_id', 'created_at']
+        
+        
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'date_of_birth', 'profile_image', 'role']

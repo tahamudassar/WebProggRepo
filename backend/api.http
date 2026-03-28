@@ -1,10 +1,10 @@
 
-### 
+### login
 POST http://localhost:8000/api/token/ HTTP/1.1
 Content-Type: application/json
 
 {
-	"email": "test5",
+	"email": "pain",
 	"password": "123456789012"
 }
 
@@ -80,3 +80,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
     "post_id": 12,
     "content": "This is a test share."
 }
+### detail viewof user
+
+GET http://localhost:8000/api/userDetail/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyNjM3MzIwLCJpYXQiOjE3MzI2MzAxMjAsImp0aSI6ImM4YzZlMDZkNThiODQ3YTU5OGQ1YjM1NGJhYTlkMmU0IiwidXNlcl9pZCI6Nn0.gfK2R9tDUosGaDl0hmrsfv-Cbm0GRTRZKrvohJ3b9ls
+Content-Type: application/json
+
+### view user posts
+GET http://localhost:8000/api/userPosts/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyNjM4Njg0LCJpYXQiOjE3MzI2MzE0ODQsImp0aSI6IjZiZWY4YWFhODYzMjRjOTRhZjI0M2YwN2Q0YjM2ODI3IiwidXNlcl9pZCI6Mn0.XZbqXNx2BI43cYG0AcP-FoBabzTl1ir750zxNBfI_Sk
+Content-Type: application/json

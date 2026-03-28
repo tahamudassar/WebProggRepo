@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import StudyPost, CarpoolPost, BloodDonationPost, Post, Like, Comment
-from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer, RegisterSerializer, CommentSerializer, ShareSerializer
+from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer, RegisterSerializer, CommentSerializer, ShareSerializer,UserSerializer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import StudyPost, Community, User
@@ -277,3 +277,47 @@ class CreateLike(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+        
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
+
+    def get(self, request, *args, **kwargs):
+        user_email = request.user.email  # Use the authenticated user's email
+        try:
+            user = User.objects.get(email=user_email)
+            serializer = UserSerializer(user)  # Use the serializer to serialize user data
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "User not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+     
+     
+            
+class UserPostsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user  # Get the authenticated user
+        
+        # Fetch posts by the user
+        study_posts = StudyPost.objects.filter(user=user)
+        blood_donation_posts = BloodDonationPost.objects.filter(user=user)
+        carpool_posts = CarpoolPost.objects.filter(user=user)
+
+        # Serialize the posts
+        study_posts_serialized = StudyPostSerializer(study_posts, many=True).data
+        blood_donation_posts_serialized = BloodDonationPostSerializer(blood_donation_posts, many=True).data
+        carpool_posts_serialized = CarpoolPostSerializer(carpool_posts, many=True).data
+
+        # Combine all posts into a single response
+        all_posts = {
+            "study_posts": study_posts_serialized,
+            "blood_donation_posts": blood_donation_posts_serialized,
+            "carpool_posts": carpool_posts_serialized,
+        }
+
+        return Response(all_posts, status=status.HTTP_200_OK)
