@@ -15,6 +15,17 @@ from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 import json
 from rest_framework.permissions import IsAuthenticated
+from abc import ABC, abstractmethod
+from django.conf import settings
+
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from rest_framework import status
+
+
+
+
 
 #solid principles to be implemented
 
@@ -321,3 +332,154 @@ class UserPostsView(APIView):
         }
 
         return Response(all_posts, status=status.HTTP_200_OK)
+    
+    
+##Interface segregation priniciple
+from django.contrib.auth import get_user_model
+
+User = get_user_model()  # Get the user model
+
+class ProfileUpdater(ABC):
+    @abstractmethod
+    def update(self, user, data):
+        pass
+
+
+# # Derived classes
+
+#update username is optional
+# class UpdateUsername(ProfileUpdater):
+#     def update(self, user, data):
+#         new_username = data.get('username')
+#         if not new_username:
+#             raise ValueError("Username is required.")
+        
+#         # Check if the new username already exists in the database
+#         if User.objects.filter(username=new_username).exclude(id=user.id).exists():
+#             raise ValueError("Username already exists. Please choose a different one.")
+        
+#         user.username = new_username
+#         user.save()
+#         return {"message": "Username updated successfully."}
+
+
+class UpdatePassword(ProfileUpdater):
+    def update(self, user, data):
+        old_password = data.get('old_password')
+        new_password = data.get('new_password')
+        if not old_password or not new_password:
+            raise ValueError("Old password and new password are required.")
+        if not user.check_password(old_password):
+            raise ValueError("Old password is incorrect.")
+        user.set_password(new_password)
+        user.save()
+        return {"message": "Password updated successfully."}
+
+
+class UpdateProfileImageURL(ProfileUpdater):
+    def update(self, user, data):
+        new_image_url = data.get('profile_image')
+        if not new_image_url:
+            raise ValueError("Profile image URL is required.")
+        user.profile_image = new_image_url
+        user.save()
+        return {"message": "Profile image updated successfully."}
+
+
+class UpdateEmail(ProfileUpdater):
+    def update(self, user, data):
+        new_email = data.get('email')
+        if not new_email:
+            raise ValueError("Email is required.")
+        
+        if user.email == new_email:
+            raise ValueError("The new email cannot be the same as the current email.")
+        
+        # Check if the new email already exists in the database
+        if User.objects.filter(email=new_email).exclude(id=user.id).exists():
+            raise ValueError("Email already exists. Please choose a different one.")
+        
+        user.email = new_email
+        user.save()
+        return {"message": "Email updated successfully."}
+
+
+# API Views
+class ProfileUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, update_type, *args, **kwargs):
+        user = request.user
+        data = request.data
+        updater = None
+
+        # Determine the type of update
+        #username change is optional
+        # if update_type == "username":
+        #     updater = UpdateUsername()
+        if update_type == "password":
+            updater = UpdatePassword()
+        elif update_type == "profile_image":
+            updater = UpdateProfileImageURL()
+        elif update_type == "email":
+            updater = UpdateEmail()
+        else:
+            return Response({"error": "Invalid update type."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Perform the update
+        try:
+            result = updater.update(user, data)
+            return Response(result, status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+#forgot password
+class PasswordResetRequestView(APIView):
+    """
+    Endpoint for requesting a password reset email.
+    """
+
+    def post(self, request):
+        email = request.data.get("email")
+        if not email:
+            return Response({"detail": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"detail": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Generate reset token
+        token = default_token_generator.make_token(user)
+        reset_url = f"http://localhost:3000/reset-password/{token}"
+        
+        # Send the reset email
+        send_mail(
+            "Password Reset Request",  # Subject
+            f"Click the link below to reset your password:\n\n{reset_url}",  # Email body
+            settings.DEFAULT_FROM_EMAIL,  # From email (using the setting from your settings.py)
+            [email],  # To email address
+        )
+
+        return Response({"detail": "Password reset email sent."}, status=status.HTTP_200_OK)
+    
+
+class PasswordResetConfirmView(APIView):
+    """
+    Endpoint for confirming the password reset with the token and new password.
+    """
+
+    def post(self, request, token):
+        new_password = request.data.get("new_password")
+        if not new_password:
+            return Response({"detail": "New password is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(id=default_token_generator.check_token(token))
+        except (User.DoesNotExist, ValueError):
+            return Response({"detail": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response({"detail": "Password reset successful."}, status=status.HTTP_200_OK)

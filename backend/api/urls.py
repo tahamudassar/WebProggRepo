@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from .views import RegisterView
-from .views import LatestPostsView, StudyPostListView, BloodDonationPostListView, CarpoolPostListView, CreateStudyPost, CreateCarPoolPost, CreateBloodDonationPost,CreateComment, CreateLike, CreateShare,UserDetailView,UserPostsView
+from .views import LatestPostsView, StudyPostListView, BloodDonationPostListView, CarpoolPostListView, CreateStudyPost, CreateCarPoolPost, CreateBloodDonationPost,CreateComment, CreateLike, CreateShare,UserDetailView,UserPostsView,ProfileUpdateView
 
 urlpatterns = [
     #path('hello/', views.hello_world),
@@ -30,6 +30,8 @@ urlpatterns = [
     path('createShare/', CreateShare.as_view(), name='shares'),
     path('userDetail/', UserDetailView.as_view(), name='user-detail'),
     path('userPosts/', UserPostsView.as_view(), name='user-posts'),
-    
+    path('updateProfile/<str:update_type>/', ProfileUpdateView.as_view(), name='update-profile'),
+    path("passwordReset/", views.PasswordResetRequestView.as_view(), name="password-reset"),
+    path("passwordReset/confirm/<str:token>/", views.PasswordResetConfirmView.as_view(), name="password-reset-confirm"),
 ]
 

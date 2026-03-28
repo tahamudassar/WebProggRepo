@@ -155,3 +155,10 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     # "Bearer <Token>"
 }
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sdaproj@outlook.com'  # Your email
+EMAIL_HOST_PASSWORD = 'burnertemp69420'    # Your email password or an app password
+DEFAULT_FROM_EMAIL = 'sdaproj@outlook.com'

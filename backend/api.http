@@ -4,8 +4,8 @@ POST http://localhost:8000/api/token/ HTTP/1.1
 Content-Type: application/json
 
 {
-	"email": "pain",
-	"password": "123456789012"
+	"email": "new_email@example.com",
+	"password": "new_secure_password"
 }
 
 ###
@@ -90,3 +90,23 @@ Content-Type: application/json
 GET http://localhost:8000/api/userPosts/ HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyNjM4Njg0LCJpYXQiOjE3MzI2MzE0ODQsImp0aSI6IjZiZWY4YWFhODYzMjRjOTRhZjI0M2YwN2Q0YjM2ODI3IiwidXNlcl9pZCI6Mn0.XZbqXNx2BI43cYG0AcP-FoBabzTl1ir750zxNBfI_Sk
 Content-Type: application/json
+
+
+###update email
+POST http://localhost:8000/api/updateProfile/email/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyODA0OTY0LCJpYXQiOjE3MzI3OTc3NjQsImp0aSI6IjY1NTUwYmQ5YmU1YzQ1ZmFiYzgzMmU3OTU4YzlkZmQ1IiwidXNlcl9pZCI6Mn0.DyMw4STM1LN4_jF8875eDsa38Q2O70EhkCu7_oRq8LE
+Content-Type: application/json
+
+{
+    "email": "new_email@example.com"
+}
+
+###update password
+POST http://localhost:8000/api/updateProfile/password/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyODA0OTY0LCJpYXQiOjE3MzI3OTc3NjQsImp0aSI6IjY1NTUwYmQ5YmU1YzQ1ZmFiYzgzMmU3OTU4YzlkZmQ1IiwidXNlcl9pZCI6Mn0.DyMw4STM1LN4_jF8875eDsa38Q2O70EhkCu7_oRq8LE
+Content-Type: application/json
+
+{
+    "old_password": "123456789012",
+    "new_password": "new_secure_password"
+}
