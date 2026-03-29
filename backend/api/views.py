@@ -466,7 +466,7 @@ class PasswordResetRequestView(APIView):
 
 class PasswordResetConfirmView(APIView):
     """
-    Endpoint for confirming the password reset with the token and new password.
+    Endpoint to reset the user's password using the token.
     """
 
     def post(self, request, token):
@@ -475,11 +475,15 @@ class PasswordResetConfirmView(APIView):
             return Response({"detail": "New password is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            user = User.objects.get(id=default_token_generator.check_token(token))
-        except (User.DoesNotExist, ValueError):
+            # Loop through users and check token for each user
+            for user in User.objects.all():
+                if default_token_generator.check_token(user, token):
+                    user.set_password(new_password)
+                    user.save()
+                    return Response({"detail": "Password reset successful."}, status=status.HTTP_200_OK)
+
+            # If no user matches the token
             return Response({"detail": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
 
-        user.set_password(new_password)
-        user.save()
-
-        return Response({"detail": "Password reset successful."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
