@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from api.models import User,StudyPost, BloodDonationPost, CarpoolPost, Comment ,Like, Share
+from api.models import User,StudyPost, BloodDonationPost, CarpoolPost, Comment ,Like, Share, Material
 from django.core.exceptions import ValidationError 
 from datetime import datetime
 
@@ -134,3 +134,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'username', 'date_of_birth', 'profile_image', 'role']
+        
+class MaterialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Material
+        fields = ['title', 'file_url']
+        

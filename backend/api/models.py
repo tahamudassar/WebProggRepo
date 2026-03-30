@@ -163,7 +163,7 @@ class Notification(models.Model):
 class Material(models.Model):
     material_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)  # Title of the resource
-    description = models.TextField()  # Description of the material
+    description = models.TextField(blank = True, null = True)  # Description of the material
     file_url = models.URLField()  # URL to the file or resource
     created_at = models.DateTimeField(default=timezone.now)  # Timestamp when the material was added
     

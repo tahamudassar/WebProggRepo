@@ -7,10 +7,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import StudyPost, CarpoolPost, BloodDonationPost, Post, Like, Comment
-from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer, RegisterSerializer, CommentSerializer, ShareSerializer,UserSerializer
+from api.serializers import StudyPostSerializer, CarpoolPostSerializer, BloodDonationPostSerializer, RegisterSerializer, CommentSerializer, ShareSerializer,UserSerializer, MaterialSerializer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import StudyPost, Community, User
+from .models import StudyPost, Community, User, Material
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 import json
@@ -477,3 +477,10 @@ class PasswordResetConfirmView(APIView):
 
         except Exception as e:
             return Response({"detail": f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class MaterialListView(APIView):
+    def get(self, request):
+        materials = Material.objects.all()  # Fetch all materials
+        serializer = MaterialSerializer(materials, many=True)  # Serialize the data
+        return Response(serializer.data)
+        
