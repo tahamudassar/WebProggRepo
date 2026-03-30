@@ -24,9 +24,6 @@ from django.core.mail import send_mail
 from rest_framework import status
 
 
-
-
-
 #solid principles to be implemented
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -150,6 +147,7 @@ class LatestPostsView(APIView):
         carpool_posts = CarpoolPost.objects.all().order_by('-created_at')[:5]
 
         # Combine and sort them by creation time
+        
         all_posts = sorted(
             list(study_posts) + list(blood_posts) + list(carpool_posts),
             key=lambda x: x.created_at,
@@ -164,6 +162,7 @@ class LatestPostsView(APIView):
             )
 
         # Serialize the results
+        
         response_data = []
         for post in all_posts:
             if isinstance(post, StudyPost):
@@ -176,7 +175,8 @@ class LatestPostsView(APIView):
 
         return Response(response_data, status=status.HTTP_200_OK)
 
-#Liskov and ISP
+#Liskov and Interface Segregation Principle implementation
+
 class BasePostListView(APIView):
     model = None
     serializer_class = None
@@ -190,6 +190,7 @@ class BasePostListView(APIView):
             )
         
         # Fetch and order posts
+        
         posts = self.model.objects.all().order_by("-created_at")
         if not posts.exists():
             return Response(
@@ -198,6 +199,7 @@ class BasePostListView(APIView):
             )
         
         # Serialize the data
+        
         serializer = self.serializer_class(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -241,6 +243,7 @@ class CreateComment(APIView):
     def post(self, request):
         try:
             # Extract data from the request
+            
             data = request.data.copy()
             data['user'] = request.user.id  # Add the authenticated user to the data
             serializer = CommentSerializer(data=data)  # Pass the data to the serializer
@@ -315,16 +318,19 @@ class UserPostsView(APIView):
         user = request.user  # Get the authenticated user
         
         # Fetch posts by the user
+        
         study_posts = StudyPost.objects.filter(user=user)
         blood_donation_posts = BloodDonationPost.objects.filter(user=user)
         carpool_posts = CarpoolPost.objects.filter(user=user)
 
         # Serialize the posts
+        
         study_posts_serialized = StudyPostSerializer(study_posts, many=True).data
         blood_donation_posts_serialized = BloodDonationPostSerializer(blood_donation_posts, many=True).data
         carpool_posts_serialized = CarpoolPostSerializer(carpool_posts, many=True).data
 
         # Combine all posts into a single response
+        
         all_posts = {
             "study_posts": study_posts_serialized,
             "blood_donation_posts": blood_donation_posts_serialized,
@@ -345,22 +351,24 @@ class ProfileUpdater(ABC):
         pass
 
 
-# # Derived classes
+# Derived classes
 
-#update username is optional
-# class UpdateUsername(ProfileUpdater):
-#     def update(self, user, data):
-#         new_username = data.get('username')
-#         if not new_username:
-#             raise ValueError("Username is required.")
+class UpdateEmail(ProfileUpdater):
+    def update(self, user, data):
+        new_email = data.get('email')
+        if not new_email:
+            raise ValueError("Email is required.")
         
-#         # Check if the new username already exists in the database
-#         if User.objects.filter(username=new_username).exclude(id=user.id).exists():
-#             raise ValueError("Username already exists. Please choose a different one.")
+        if user.email == new_email:
+            raise ValueError("The new email cannot be the same as the current email.")
         
-#         user.username = new_username
-#         user.save()
-#         return {"message": "Username updated successfully."}
+        # Check if the new email already exists in the database
+        if User.objects.filter(email=new_email).exclude(id=user.id).exists():
+            raise ValueError("Email already exists. Please choose a different one.")
+        
+        user.email = new_email
+        user.save()
+        return {"message": "Email updated successfully."}
 
 
 class UpdatePassword(ProfileUpdater):
@@ -386,25 +394,8 @@ class UpdateProfileImageURL(ProfileUpdater):
         return {"message": "Profile image updated successfully."}
 
 
-class UpdateEmail(ProfileUpdater):
-    def update(self, user, data):
-        new_email = data.get('email')
-        if not new_email:
-            raise ValueError("Email is required.")
-        
-        if user.email == new_email:
-            raise ValueError("The new email cannot be the same as the current email.")
-        
-        # Check if the new email already exists in the database
-        if User.objects.filter(email=new_email).exclude(id=user.id).exists():
-            raise ValueError("Email already exists. Please choose a different one.")
-        
-        user.email = new_email
-        user.save()
-        return {"message": "Email updated successfully."}
-
-
 # API Views
+
 class ProfileUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -414,9 +405,7 @@ class ProfileUpdateView(APIView):
         updater = None
 
         # Determine the type of update
-        #username change is optional
-        # if update_type == "username":
-        #     updater = UpdateUsername()
+        
         if update_type == "password":
             updater = UpdatePassword()
         elif update_type == "profile_image":
@@ -434,6 +423,7 @@ class ProfileUpdateView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 #forgot password
+
 class PasswordResetRequestView(APIView):
     """
     Endpoint for requesting a password reset email.
