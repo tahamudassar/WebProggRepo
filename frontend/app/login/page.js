@@ -12,12 +12,36 @@ function Login() {
     const router = useRouter()
     const setUser = useUserData((state)=>state.setUser)  
 
-    const handleChange = (e)=>{
-      const {name, value} = e.target
-      setFormData({
-        ...formData,
-        [name]: value,
-      })
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:8000/api/token/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log('login successful');
+        const data = await response.json()
+        console.log(data)
+        //save user data in the store
+        setUser({
+          username: data.username,
+          email: data.email
+        })
+
+        // Save the access token to localStorage
+        localStorage.setItem('accessToken', data.access);  // Store access token
+        localStorage.setItem('refreshToken', data.refresh);  // Store refresh token
+        router.push("/")
+      } else {
+        console.error('Login failed');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
     }
 
 
@@ -102,8 +126,27 @@ function Login() {
             >
               Login
             </button>
-          </form>
+          </div>
+          <div className="mt-2">
+            <button
+              type="button"
+              className="text-sm text-blue-500 hover:underline"
+              onClick={() => router.push('/forgot-password')}
+            >
+              Forgot Password?
+            </button>
+          </div>
         </div>
+        <Button
+          type="submit"
+          className="float-right w-full"
+          onClick={handleSubmit}
+        >
+          Login
+        </Button>
+      </Card>
+      <div className='w-full h-screen '>
+      </div>
     </div>
   )
 }
