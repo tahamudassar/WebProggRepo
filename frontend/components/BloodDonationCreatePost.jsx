@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import CustomCardHeader from "./CustomCardHeader";
 import CustomCardFooter from "./CustomCardFooter";
+import { useRouter } from 'next/navigation';
 
 function BloodDonation({ community }) {
   const [formData, setFormData] = useState({
@@ -11,7 +12,8 @@ function BloodDonation({ community }) {
     urgency: "Low", // Default value
     requiredWithin: "1", // Default value (1 week)
   });
-
+  const router = useRouter();
+  const [successMessage, setSuccessMessage] = useState("");
   // Handle input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -49,15 +51,20 @@ function BloodDonation({ community }) {
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
+        setSuccessMessage("Posted Successfully!"); // Set success message
         // Reset form after successful submission
         setFormData({
           bloodType: "A+",
-          urgency: "Medium",
+          urgency: "Low",
           requiredWithin: "1",
         });
+        setTimeout(() => {
+          router.push("/"); // Redirect to the homepage
+        }, 2000); 
       })
       .catch((error) => {
         console.error("Error:", error);
+        setSuccessMessage(""); // Clear success message on error
       });
   };
 
@@ -69,6 +76,12 @@ function BloodDonation({ community }) {
           description="Find & Donate to save lives!"
         />
         <CardContent className="space-y-2">
+          {/* Success Message */}
+          {successMessage && (
+            <div className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
+              {successMessage}
+            </div>
+          )}
           <div className="space-y-1 w-full">
             <Label htmlFor="bloodType">Blood Type</Label>
             <select

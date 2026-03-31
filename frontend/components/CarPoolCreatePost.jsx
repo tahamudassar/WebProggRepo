@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import CustomCardHeader from "./CustomCardHeader";
 import CustomCardFooter from "./CustomCardFooter";
+import { useRouter } from 'next/navigation';
 
 function CarPool({ community }) {
   const [formData, setFormData] = useState({
@@ -14,7 +15,8 @@ function CarPool({ community }) {
     preferred_gender: "male",
     capacity: "1", // Default value
   });
-
+  const router = useRouter();
+  const [successMessage, setSuccessMessage] = useState("");
   // Handle input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -54,14 +56,18 @@ function CarPool({ community }) {
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
+        setSuccessMessage("Posted Successfully!"); // Set success message
         // Reset form after successful submission
         setFormData({
           pickup_point: "",
           dropoff_point: "",
           pickup_time: "",
           preferred_gender: "male",
-          capacity: "1", // Reset capacity to default
+          capacity: "1", 
         });
+        setTimeout(() => {
+          router.push("/"); // Redirect to the homepage
+        }, 2000); 
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -76,6 +82,12 @@ function CarPool({ community }) {
           description="Find a partner for a safe journey!"
         />
         <CardContent className="space-y-2">
+          {/* Success Message */}
+          {successMessage && (
+            <div className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
+              {successMessage}
+            </div>
+          )}
           <div className="flex items-center justify-center gap-4">
             <div className="space-y-1 w-full">
               <Label htmlFor="pickup_point">Pickup Point</Label>

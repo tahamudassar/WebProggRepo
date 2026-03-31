@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import CustomCardHeader from "./CustomCardHeader";
 import CustomCardFooter from "./CustomCardFooter";
+import { useRouter } from 'next/navigation';
 
 function StudyGuide({ community }) { // Accept community as a prop
   const [formData, setFormData] = useState({
@@ -14,7 +15,8 @@ function StudyGuide({ community }) { // Accept community as a prop
     questionlink: "",
     questionimage: null,
   });
-
+  const router = useRouter();
+  const [successMessage, setSuccessMessage] = useState("");
   // Handle input changes for text, URL, and textarea
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -64,6 +66,7 @@ function StudyGuide({ community }) { // Accept community as a prop
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
+        setSuccessMessage("Posted Successfully!");
         // Reset form after successful submission
         setFormData({
           studytitle: "",
@@ -71,7 +74,10 @@ function StudyGuide({ community }) { // Accept community as a prop
           questionlink: "",
           questionimage: null,
         });
-      })
+      setTimeout(() => {
+        router.push("/"); // Redirect to the homepage
+      }, 2000); 
+    })
       .catch((error) => {
         console.error("Error:", error);
       });
@@ -85,6 +91,12 @@ function StudyGuide({ community }) { // Accept community as a prop
           description="Ask anything regarding studies."
         />
         <CardContent className="space-y-2">
+          {/* Success Message */}
+          {successMessage && (
+            <div className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
+              {successMessage}
+            </div>
+          )}
           <div className="space-y-1">
             <Label htmlFor="studytitle">Title</Label>
             <Input
