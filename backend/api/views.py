@@ -483,4 +483,26 @@ class MaterialListView(APIView):
         materials = Material.objects.all()  # Fetch all materials
         serializer = MaterialSerializer(materials, many=True)  # Serialize the data
         return Response(serializer.data)
+    
+
+
+class UserDetailView(APIView):
+    def get(self, request, user_id):
+        try:
+            # Fetch user by user_id
+            user = User.objects.get(id=user_id)
+            
+            # Prepare the response data
+            data = {
+                "username": user.username,
+                "email": user.email
+            }
+            
+            # Return the response with user details
+            return Response(data, status=status.HTTP_200_OK)
         
+        except User.DoesNotExist:
+            # Return error if user not found
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+
