@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import PostCardHeader from "./PostCardHeader";
+import PostCardFooter from "./PostCardFooter";
 
 function CarPoolPosts({ post }) {
   const [user, setUser] = useState(null);
@@ -34,6 +35,7 @@ function CarPoolPosts({ post }) {
           cost-effective trip! 🌟
         </p>
       </CardContent>
+      <PostCardFooter/>
     </Card>
   );
 }

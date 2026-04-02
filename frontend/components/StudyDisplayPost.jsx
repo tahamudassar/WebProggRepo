@@ -20,15 +20,13 @@ function StudyPosts({ post }) {
     <Card className="w-full bg-sub-color mb-2 border-none overflow-hidden">
       {user ? <PostCardHeader user={user} /> : <div>Loading user info...</div>}
       <CardContent className="gap-4">
-        <h3 className="font-extrabold text-2xl mb-2">Be Someone's Lifeline!</h3>
+        <h3 className="font-extrabold text-2xl mb-2">Lets Study Together!</h3>
         <p className="text-[14px] leading-7">
-          Immediate Call for Blood Donation!
+          Hello! I have a question from {post.main_topic} and {" "} would appereciate if someone could help me with it.
           <br />
-          🩸Blood Types Required: {post.blood_type_required}
+          🏫Question: {post.question_asked}
           <br />
-          🕰️Required-Within: {post.required_within}
-          <br />
-          🔴Urgency: {post.urgency}
+          Link: {post.link_url ? post.link_url : "None"}
           <br />
         </p>
       </CardContent>

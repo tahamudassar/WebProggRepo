@@ -6,12 +6,7 @@ function DisplayPosts() {
   return (
     <div>
       {/* i am displying all posts */}
-     
-      <BloodDonationPosts />
-      
-      <BloodDonationPosts />
-      
-      <BloodDonationPosts />
+    
     </div>
   );
 }

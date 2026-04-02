@@ -75,28 +75,16 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Components",
-          url: "#",
+          title: "Study Guide",
+          url: "/studyCommunity",
         },
         {
           title: "Car Pool",
           url: "/carpoolCommunity",
         },
         {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
+          title: "Blood Donation",
+          url: "/bloodDonationCommunity",
         },
       ],
     },

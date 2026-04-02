@@ -44,10 +44,7 @@ function PostCardFooter() {
                 Comment
               </div>
               <Separator orientation="vertical" />
-              <div className="text-center w-full cursor-pointer hover:bg-[#262626] transition-all duration-200 rounded-md py-2 flex items-center justify-center gap-1">
-                <Share2 className="h-5" />
-                Share
-              </div>
+              
             </div>
           </div>
           {CommentBoxOpen && <AddComment />}
