@@ -1,10 +1,10 @@
 
-### 
+### login
 POST http://localhost:8000/api/token/ HTTP/1.1
 Content-Type: application/json
 
 {
-	"email": "sdaproj@outlook.com",
+	"email": "temps@temp.com",
 	"password": "123456789012"
 }
 
@@ -22,7 +22,7 @@ Content-Type: application/json
 
 {
     "username": "abuuu",
-    "email": "sdaproj@outlook.com",
+    "email": "temps@temp.com",
     "password": "123456789012"
 }
 
@@ -96,4 +96,20 @@ Content-Type: application/json
 
 {
     "new_password": "new1234567890"
+}
+
+POST http://localhost:8000/api/updateProfile/email/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <your_auth_token>
+
+{
+    "new_email": "newemail@example.com"
+}
+
+###
+POST http://localhost:8000/api/updateProfile/username/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyODkzNDYzLCJpYXQiOjE3MzI4ODYyNjMsImp0aSI6IjA4NTYwNThmNDQ1MjQ4N2NiZDI4NzIzNDA4NmI3Y2FlIiwidXNlcl9pZCI6MTR9.py91s4np8AjLKQaSipYmS3e_42G-91rZl9vNXUin-a4
+{
+    "username": "lmaoxd"
 }

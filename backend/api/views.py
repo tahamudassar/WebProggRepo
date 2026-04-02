@@ -351,7 +351,20 @@ class ProfileUpdater(ABC):
         pass
 
 
-# Derived classes
+#update username is optional
+class UpdateUsername(ProfileUpdater):
+    def update(self, user, data):
+        new_username = data.get('username')
+        if not new_username:
+            raise ValueError("Username is required.")
+        
+        # Check if the new username already exists in the database
+        if User.objects.filter(username=new_username).exclude(id=user.id).exists():
+            raise ValueError("Username already exists. Please choose a different one.")
+        
+        user.username = new_username
+        user.save()
+        return {"message": "Username updated successfully."}
 
 class UpdateEmail(ProfileUpdater):
     def update(self, user, data):
@@ -405,8 +418,9 @@ class ProfileUpdateView(APIView):
         updater = None
 
         # Determine the type of update
-        
-        if update_type == "password":
+        if update_type == "username":
+            updater = UpdateUsername()
+        elif update_type == "password":
             updater = UpdatePassword()
         elif update_type == "profile_image":
             updater = UpdateProfileImageURL()
