@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';  // Import necessary hooks
 import StudyPosts from "@/components/StudyDisplayPost";
 import CarPoolPosts from "@/components/CarPoolDisplayPost";
 import BloodDonationPosts from "@/components/BloodDonationDisplayPost";
-import DefaultLayout from '@/components/DefaultLayout';
 
 function PostList() {
   const [posts, setPosts] = useState([]);  // State to hold posts
@@ -33,7 +32,7 @@ function PostList() {
   }
 
   return (
-    <DefaultLayout>
+    <>
       {posts.map((post) => {
         // Conditional rendering based on post.community_id
         switch (post.community) {
@@ -54,7 +53,7 @@ function PostList() {
             return <div key={post.id}>No suitable community found for this post.</div>;
         }
       })}
-    </DefaultLayout>
+    </>
   );
 }
 
