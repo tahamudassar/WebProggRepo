@@ -6,8 +6,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from .views import RegisterView, PasswordResetRequestView
-from .views import LatestPostsView, StudyPostListView, BloodDonationPostListView, CarpoolPostListView, CreateStudyPost, CreateCarPoolPost, CreateBloodDonationPost,CreateComment, CreateLike, CreateShare,UserDetailView,UserPostsView,ProfileUpdateView, MaterialListView
+from .views import RegisterView, PasswordResetRequestView, ToggleLike
+from .views import LatestPostsView, StudyPostListView, BloodDonationPostListView, CarpoolPostListView, CreateStudyPost, CreateCarPoolPost, CreateBloodDonationPost,CreateComment, CreateLike, CreateShare,UserDetailView,UserPostsView,ProfileUpdateView, MaterialListView, UnlikePost, CheckLikeStatus
 
 urlpatterns = [
     #path('hello/', views.hello_world),
@@ -27,6 +27,9 @@ urlpatterns = [
     path('createBloodDonationPost', CreateBloodDonationPost.as_view(), name='create_blood_donation_post'),
     path('createComment/', CreateComment.as_view(), name='comments'),
     path('createLike/', CreateLike.as_view(), name='likes'),
+    path('unlikePost/', UnlikePost.as_view(), name='unlike_post'),
+    path('checkLikeStatus/', CheckLikeStatus.as_view(), name='check_like_status'),
+     path('toggleLike/', ToggleLike.as_view(), name='toggle_like'),
     path('createShare/', CreateShare.as_view(), name='shares'),
     path('userDetail/', UserDetailView.as_view(), name='user-detail'),
     path('userPosts/', UserPostsView.as_view(), name='user-posts'),

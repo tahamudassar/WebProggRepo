@@ -12,16 +12,17 @@ class CreateStudyPostSerializer(serializers.ModelSerializer):
         
 
 class StudyPostSerializer(serializers.ModelSerializer):
-    type = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = StudyPost
-        fields = "__all__"
+        fields = '__all__'  # Include all fields
+        extra_fields = ['likes_count']  # Include the likes_count field
 
-    def get_type(self, obj):
-        return "study"
-    
+    def get_likes_count(self, obj):
+        return obj.likes.count()  # Access the related 'likes' queryset
             
+    
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         # Call the parent class validate method to get the token data
@@ -71,14 +72,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     
 
 class BloodDonationPostSerializer(serializers.ModelSerializer):
-    type = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = BloodDonationPost
-        fields = "__all__"
+        fields = '__all__'  # Include all fields
+        extra_fields = ['likes_count']  # Include the likes_count field
 
-    def get_type(self, obj):
-        return "blood-donation"
+    def get_likes_count(self, obj):
+        return obj.likes.count()  # Access the related 'likes' queryset
 
 class CreateCarPoolPostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -86,19 +88,15 @@ class CreateCarPoolPostSerializer(serializers.ModelSerializer):
         fields = ['user', 'community', 'pickup_point', 'dropoff_point', 'pickup_time', 'preferred_gender', 'created_at']
 
 class CarpoolPostSerializer(serializers.ModelSerializer):
-    type = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = CarpoolPost
-        fields = "__all__"
+        fields = '__all__'  # Include all fields
+        extra_fields = ['likes_count']  # Include the likes_count field
 
-    def validate_pickup_time(self, value):
-        if not isinstance(value, datetime):
-            raise serializers.ValidationError("Invalid datetime format for pickup_time.")
-        return value
-
-    def get_type(self, obj):
-        return "carpool"
+    def get_likes_count(self, obj):
+        return obj.likes.count()  # Access the related 'likes' queryset
 
 
 

@@ -17,7 +17,7 @@ import json
 from rest_framework.permissions import IsAuthenticated
 from abc import ABC, abstractmethod
 from django.conf import settings
-
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -263,36 +263,109 @@ class CreateComment(APIView):
             )
 
 class CreateLike(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can like posts
+
     def post(self, request, *args, **kwargs):
         try:
-            # Extract post_id and user_id from the request
             post_id = request.data.get('post_id')
+            post = Post.objects.get(post_id=post_id)
 
-            # Validate input
-            user = request.user if request.user.is_authenticated else None
-            if not user:
-                return Response({"error": "User is not authenticated."}, status=status.HTTP_403_FORBIDDEN)
+            # Prevent duplicate likes
+            if Like.objects.filter(post_id=post, user_id=request.user).exists():
+                return Response({"error": "Like already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if the post exists
-            try:
-                post = Post.objects.get(post_id=post_id)
-            except Post.DoesNotExist:
-                return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
-
-            # Check if the like already exists
-            if Like.objects.filter(post_id=post, user_id=user).exists():
-                return Response({"error": "Like already exists for this user and post."}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Create and save the like
-            like = Like(post_id=post, user_id=user, created_at=timezone.now())
-            like.save()
-
+            # Create the like
+            Like.objects.create(post_id=post, user_id=request.user)
             return Response({"message": "Like saved successfully!"}, status=status.HTTP_201_CREATED)
+
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UnlikePost(APIView):
+    permission_classes = [IsAuthenticated]  # Enforces authentication
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            # Get the authenticated user
+            user = request.user
+
+            # Extract post_id from the request data
+            post_id = request.data.get('post_id')
+            if not post_id:
+                return Response({"error": "Post ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Check if the post exists
+            post = get_object_or_404(Post, post_id=post_id)
+
+            # Check if the like exists
+            like = Like.objects.filter(post_id=post, user_id=user).first()
+            if not like:
+                return Response({"error": "Like does not exist for this post."}, status=status.HTTP_404_NOT_FOUND)
+
+            # Delete the like
+            like.delete()
+
+            return Response({"message": "Like removed successfully."}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500)
         
-        
+class CheckLikeStatus(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        post_id = self.request.query_params.get('post_id')
+
+        if not post_id:
+            return Response({"error": "Post ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            post = Post.objects.get(post_id=post_id)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the current user has liked the post
+        user = request.user
+        has_liked = Like.objects.filter(post_id=post, user_id=user).exists()
+
+        return Response({"liked": has_liked}, status=status.HTTP_200_OK)
+    
+
+class ToggleLike(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can like posts
+
+    def post(self, request, *args, **kwargs):
+        try:
+            post_id = request.data.get('post_id')
+            post = Post.objects.get(post_id=post_id)
+
+            # Check if the user has already liked the post
+            like = Like.objects.filter(post_id=post, user_id=request.user).first()
+
+            if like:  # If already liked, unlike it
+                like.delete()
+                action = "unliked"
+            else:  # Otherwise, like the post
+                Like.objects.create(post_id=post, user_id=request.user)
+                action = "liked"
+
+            # Get the updated like count
+            updated_like_count = Like.objects.filter(post_id=post).count()
+
+            return Response({
+                "message": f"Post successfully {action}!",
+                "updated_like_count": updated_like_count
+            }, status=status.HTTP_200_OK)
+
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]  # Ensure the user is authenticated

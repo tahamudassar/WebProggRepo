@@ -32,7 +32,7 @@ function StudyPosts({ post }) {
           <br />
         </p>
       </CardContent>
-      <PostCardFooter/>
+      <PostCardFooter postId={post.post_id} userId={post.user} likesCount={post.likes_count} />
     </Card>
   );
 }
