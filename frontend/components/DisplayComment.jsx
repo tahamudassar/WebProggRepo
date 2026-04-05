@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AddReply from "./AddReply";
 
 function DisplayComment({ comment }) {
-  const user = useUserData((state) => state.user);
+  const user = comment.user;
   const [Replybox, setReplybox] = useState(false);
 
   const handleReply = () => {
@@ -20,7 +20,7 @@ function DisplayComment({ comment }) {
       <Card className="w-full bg-sub-color my-2 p-2 flex items-center justify-start gap-3">
         <Avatar>
           <AvatarFallback>
-            {user.username ? user.username[0].toUpperCase() + user.username[1].toUpperCase() : "FL"}
+            {comment.username ? comment.username[0].toUpperCase() + comment.username[1].toUpperCase() : "FL"}
           </AvatarFallback>
         </Avatar>
         <div className="text-[14px]">{comment}</div>
