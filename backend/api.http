@@ -113,3 +113,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 {
     "username": "lmaoxd"
 }
+
+### add comment
+POST http://localhost:8000/api/createComment/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyOTg1MDc5LCJpYXQiOjE3MzI5Nzc4NzksImp0aSI6ImNmOWE1MmIwMGJiNDQzNzQ4NWY2YmFkNDBlYTg3ZGM4IiwidXNlcl9pZCI6MTR9.H3Mt4AAzKfL-RQVisesnJR8L6S8r6verA8ejlq2sEsY
+
+{
+    "content": "This is totally a test comment23.",
+    "post": 18
+}
+
+### fetch comments
+GET http://localhost:8000/api/fetchComments/18/ HTTP/1.1

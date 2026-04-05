@@ -261,6 +261,39 @@ class CreateComment(APIView):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+            
+class FetchComments(APIView):
+
+    def get(self, request, post_id):
+        try:
+            post = Post.objects.get(post_id=post_id)
+            comments = Comment.objects.filter(post=post)
+            serializer = CommentSerializer(comments, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Post.DoesNotExist:
+            return Response(
+                {"error": "Post not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+            
+# def get_comments_by_post(request, post_id):
+#     """
+#     Returns all comments for a given post ID.
+#     """
+#     # Get the post or return 404 if it doesn't exist
+#     post = get_object_or_404(Post, id=post_id)
+    
+#     # Get all comments related to the post
+#     comments = Comment.objects.filter(post=post).values('comment_id', 'user__username', 'content', 'created_at')
+    
+#     # Return the comments as a JSON response
+#     return JsonResponse(list(comments), safe=False)
 
 class CreateLike(APIView):
     permission_classes = [IsAuthenticated]  # Ensure only authenticated users can like posts
@@ -591,5 +624,7 @@ class UserDetailView(APIView):
         except User.DoesNotExist:
             # Return error if user not found
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+      
         
+
 

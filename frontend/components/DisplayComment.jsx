@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useUserData } from "@/store";
 import { Card } from "./ui/card";
 import { Separator } from "./ui/separator";
-import { ThumbsUp, MessageSquareMore, Share2 } from "lucide-react";
+import { ThumbsUp, MessageSquareMore } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AddReply from "./AddReply";
 
@@ -14,15 +14,13 @@ function DisplayComment({ comment }) {
   const handleReply = () => {
     setReplybox(!Replybox);
   };
+
   return (
     <div className="mb-2">
       <Card className="w-full bg-sub-color my-2 p-2 flex items-center justify-start gap-3">
         <Avatar>
-          {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
           <AvatarFallback>
-            {user.username
-              ? user.username[0].toUpperCase() + user.username[1].toUpperCase()
-              : "FL"}
+            {user.username ? user.username[0].toUpperCase() + user.username[1].toUpperCase() : "FL"}
           </AvatarFallback>
         </Avatar>
         <div className="text-[14px]">{comment}</div>

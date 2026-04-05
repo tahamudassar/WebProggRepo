@@ -4,11 +4,13 @@ import { CardFooter } from "@/components/ui/card";
 import { Separator } from "./ui/separator";
 import { ThumbsUp, MessageSquareMore } from "lucide-react";
 import AddComment from "./AddComment";
+import DisplayComment from "./DisplayComment"; // Import DisplayComment
 
 function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
   const [CommentBoxOpen, setCommentBoxOpen] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likesCount);
-  const [isLiked, setIsLiked] = useState(alreadyLiked); // Set initial liked state based on props
+  const [isLiked, setIsLiked] = useState(alreadyLiked);
+  const [comments, setComments] = useState([]); // State to hold comments
 
   const handleLike = async () => {
     try {
@@ -26,12 +28,7 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data.message);
-
-        // Update the likes count with the value returned by the server
         setCurrentLikes(data.updated_like_count);
-
-        // Toggle like/unlike state
         setIsLiked(!isLiked);
       } else {
         const errorData = await response.json();
@@ -42,8 +39,27 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
     }
   };
 
-  const handleComment = () => {
+  const handleComment = async () => {
     setCommentBoxOpen(!CommentBoxOpen);
+
+    if (!CommentBoxOpen) {
+      // Fetch comments when the section is opened
+      try {
+        const response = await fetch(`http://localhost:8000/api/fetchComments/${postId}/`);
+        if (response.ok) {
+          const data = await response.json();
+          setComments(data); // Set the fetched comments in the state
+        } else {
+          const errorData = await response.json();
+          console.error("Error fetching comments:", errorData);
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    } else {
+      // Clear the comments when the section is closed
+      setComments([]);
+    }
   };
 
   return (
@@ -57,8 +73,8 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
                 className="text-center w-full cursor-pointer hover:bg-[#262626] transition-all duration-200 rounded-md py-2 flex items-center justify-center gap-1"
                 onClick={handleLike}
               >
-                <ThumbsUp/>
-                Like ({currentLikes}) {/* Display the current likes */}
+                <ThumbsUp />
+                Like ({currentLikes})
               </div>
               <Separator orientation="vertical" />
               <div
@@ -71,9 +87,18 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
               <Separator orientation="vertical" />
             </div>
           </div>
-          {CommentBoxOpen && <AddComment />}
+          {CommentBoxOpen && <AddComment postId={postId} />}
         </div>
       </CardFooter>
+
+      {/* Render comments if the comment box is open */}
+      {CommentBoxOpen && comments.length > 0 && (
+        <div>
+          {comments.map((comment) => (
+            <DisplayComment key={comment.id} comment={comment.content} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

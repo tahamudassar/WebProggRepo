@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from .views import RegisterView, PasswordResetRequestView, ToggleLike
-from .views import LatestPostsView, StudyPostListView, BloodDonationPostListView, CarpoolPostListView, CreateStudyPost, CreateCarPoolPost, CreateBloodDonationPost,CreateComment, CreateLike, CreateShare,UserDetailView,UserPostsView,ProfileUpdateView, MaterialListView, UnlikePost, CheckLikeStatus
+from .views import LatestPostsView, StudyPostListView, BloodDonationPostListView, CarpoolPostListView, CreateStudyPost, CreateCarPoolPost, CreateBloodDonationPost,CreateComment, CreateLike, CreateShare,UserDetailView,UserPostsView,ProfileUpdateView, MaterialListView, UnlikePost, CheckLikeStatus, FetchComments
 
 urlpatterns = [
     #path('hello/', views.hello_world),
@@ -26,6 +26,7 @@ urlpatterns = [
     path('createCarpoolPost', CreateCarPoolPost.as_view(), name='create_carpool_post'),
     path('createBloodDonationPost', CreateBloodDonationPost.as_view(), name='create_blood_donation_post'),
     path('createComment/', CreateComment.as_view(), name='comments'),
+    path('fetchComments/<int:post_id>/', FetchComments.as_view(), name='fetch_comments'),
     path('createLike/', CreateLike.as_view(), name='likes'),
     path('unlikePost/', UnlikePost.as_view(), name='unlike_post'),
     path('checkLikeStatus/', CheckLikeStatus.as_view(), name='check_like_status'),
