@@ -136,5 +136,5 @@ class UserSerializer(serializers.ModelSerializer):
 class MaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Material
-        fields = ['title', 'file_url']
+        fields = ['title','description','file_url']
         
