@@ -126,3 +126,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ### fetch comments
 GET http://localhost:8000/api/fetchComments/18/ HTTP/1.1
+
+
+###fetch user
+GET http://localhost:8000/api/user/7/ HTTP/1.1

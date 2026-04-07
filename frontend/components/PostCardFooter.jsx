@@ -4,13 +4,13 @@ import { CardFooter } from "@/components/ui/card";
 import { Separator } from "./ui/separator";
 import { ThumbsUp, MessageSquareMore } from "lucide-react";
 import AddComment from "./AddComment";
-import DisplayComment from "./DisplayComment"; // Import DisplayComment
+import DisplayComment from "./DisplayComment";
 
 function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
   const [CommentBoxOpen, setCommentBoxOpen] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likesCount);
   const [isLiked, setIsLiked] = useState(alreadyLiked);
-  const [comments, setComments] = useState([]); // State to hold comments
+  const [comments, setComments] = useState([]);
 
   const handleLike = async () => {
     try {
@@ -43,7 +43,6 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
     setCommentBoxOpen(!CommentBoxOpen);
 
     if (!CommentBoxOpen) {
-      // Fetch comments when the section is opened
       try {
         const response = await fetch(`http://localhost:8000/api/fetchComments/${postId}/`);
         if (response.ok) {
@@ -57,9 +56,13 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
         console.error("Error fetching comments:", error);
       }
     } else {
-      // Clear the comments when the section is closed
       setComments([]);
     }
+  };
+
+  // Handle the new comment and update the state immediately
+  const handleNewComment = (newComment) => {
+    setComments((prevComments) => [newComment, ...prevComments]);
   };
 
   return (
@@ -87,15 +90,14 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
               <Separator orientation="vertical" />
             </div>
           </div>
-          {CommentBoxOpen && <AddComment postId={postId} />}
+          {CommentBoxOpen && <AddComment postId={postId} onNewComment={handleNewComment} />}
         </div>
       </CardFooter>
 
-      {/* Render comments if the comment box is open */}
       {CommentBoxOpen && comments.length > 0 && (
         <div>
           {comments.map((comment) => (
-            <DisplayComment key={comment.id} comment={comment.content} />
+            <DisplayComment key={comment.id} comment={comment} postId={postId} />
           ))}
         </div>
       )}

@@ -26,7 +26,19 @@ function StudyPosts({ post }) {
           <br />
           🏫Question: {post.question_asked}
           <br />
-          Link: {post.link_url ? post.link_url : "None"}
+          <br />
+          Link: {" "}
+          {post.link_url ? (
+            <a 
+              href={post.link_url} 
+              target="_blank" 
+              style={{ color: "green", textDecoration: "underline" }}
+            >
+              {post.link_url}
+            </a>
+          ) : (
+            "None"
+          )}
           <br />
         </p>
       </CardContent>
