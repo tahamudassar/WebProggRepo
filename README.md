@@ -1,25 +1,24 @@
                                                 FASTLink
 
-FASTLink is a dedicated community platform designed to foster communication, collaboration, and resource sharing among students at FAST NUCES. This platform provides a space for students to interact, share study materials, request assistance, and collaborate on both academic and non-academic matters.
+FASTLink is a dedicated community platform designed to foster communication, collaboration, and resource sharing among students at FAST NUCES, however its not restricted and any other can also access for guidance. This platform provides a space for students to interact, share study materials, request assistance, and collaborate on both academic and non-academic matters.
 
                                                 Features
 
 1. User Authentication
 
-    Secure user authentication using JWT and bcrypt.
-    Ensures only enrolled university students can access the platform.
+    Secure user authentication using JWT.
 
-2. General Messaging
+2. General Posts
 
-    A home tab for general discussions, including:
+    A home tab for general posts, including:
         Study-related queries.
-        Section changes.
-        Teacher reviews.
+        Carpool arrangements.
+        Blood donation requests.
 
 3. Study Material Repository
 
     Repository for past papers, quizzes, assignments, and other study materials.
-    Admin approval for new uploads to ensure quality and relevance.
+    Only Admin can upload study material to ensure quality and relevance.
 
 4. Communities
 
@@ -31,8 +30,6 @@ FASTLink is a dedicated community platform designed to foster communication, col
 5. User Profiles
 
     Each user has a profile to display their details.
-
-
 
                                                 Tech Stack
 
