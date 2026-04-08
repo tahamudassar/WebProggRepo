@@ -87,26 +87,7 @@ function DisplayComment({ comment, postId }) {
         <p>🗣️:</p>
         <div className="text-[14px]">{comment.content}</div>
       </Card>
-      <div className="flex items-center h-5 gap-2">
-        <div className="cursor-pointer hover:bg-[#262626] transition-all duration-200 rounded-md flex items-center justify-center text-[10px] px-2 py-1">
-          <ThumbsUp className="h-3" />
-          Like
-        </div>
-        <Separator orientation="vertical" />
-        <div
-          className="cursor-pointer hover:bg-[#262626] transition-all duration-200 rounded-md flex items-center justify-center text-[10px] px-2 py-1"
-          onClick={handleReply}
-        >
-          <MessageSquareMore className="h-3" />
-          Reply
-        </div>
-      </div>
-
-      {Replybox && (
-        <div className="ml-16 mb-10">
-          <AddReply onSubmit={handleNewComment} /> {/* Pass the handleNewComment to AddReply */}
-        </div>
-      )}
+      
     </div>
   );
 }

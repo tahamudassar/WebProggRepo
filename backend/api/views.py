@@ -24,7 +24,7 @@ from django.core.mail import send_mail
 from rest_framework import status
 
 
-#solid principles to be implemented
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
