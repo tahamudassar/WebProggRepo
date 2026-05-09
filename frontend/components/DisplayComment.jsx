@@ -18,7 +18,7 @@ function DisplayComment({ comment, postId }) {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/user/${comment.user}/`);
+        const response = await fetch(`/api/user/${comment.user}/`);
         if (response.ok) {
           const data = await response.json();
           setUserDetails(data); // Store fetched user details
@@ -37,7 +37,7 @@ function DisplayComment({ comment, postId }) {
   const handleNewComment = async (newCommentContent) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch("http://localhost:8000/api/addComment/", {
+      const response = await fetch("/api/addComment/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

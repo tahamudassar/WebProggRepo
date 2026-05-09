@@ -13,7 +13,7 @@ function PostList() {
     // Function to fetch posts from the backend
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/posts/latest/');  // Replace with your backend URL
+        const response = await fetch('/api/posts/latest/');  // Replace with your backend URL
         const data = await response.json();
         setPosts(data);  // Set the posts state with the fetched data
       } catch (error) {

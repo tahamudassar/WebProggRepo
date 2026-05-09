@@ -10,7 +10,7 @@ function StudyPosts({ post }) {
 
   useEffect(() => {
     // Fetch user details using the user_id from the post
-    fetch(`http://localhost:8000/api/user/${post.user}/`) // Assuming `post.user` holds the user_id
+    fetch(`/api/user/${post.user}/`) // Assuming `post.user` holds the user_id
       .then((response) => response.json())
       .then((data) => setUser(data))
       .catch((error) => console.error("Error fetching user details:", error));
@@ -20,7 +20,7 @@ function StudyPosts({ post }) {
     <Card className="w-full bg-sub-color mb-2 border-none overflow-hidden">
       {user ? <PostCardHeader user={user} /> : <div>Loading user info...</div>}
       <CardContent className="gap-4">
-        <h3 className="font-extrabold text-2xl mb-2">Be Someone's Lifeline!</h3>
+        <h3 className="font-extrabold text-2xl mb-2">Be Someone&apos;s Lifeline!</h3>
         <p className="text-[14px] leading-7">
           Immediate Call for Blood Donation!
           <br />

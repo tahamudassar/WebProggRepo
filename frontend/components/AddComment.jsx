@@ -18,7 +18,7 @@ function AddComment({ postId, onNewComment, placeholder = "Add a comment..." }) 
       setIsLoading(true);
       const token = localStorage.getItem("accessToken");
 
-      const response = await fetch("http://localhost:8000/api/createComment/", {
+      const response = await fetch("/api/createComment/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

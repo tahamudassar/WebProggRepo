@@ -46,7 +46,7 @@ function CarPool({ community }) {
     console.log(token);
 
     // Send the FormData to the backend
-    fetch("http://localhost:8000/api/createCarpoolPost", {
+    fetch("/api/createCarpoolPost", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`, // Include the token in the header

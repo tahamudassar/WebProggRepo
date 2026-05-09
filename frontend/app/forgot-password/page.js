@@ -20,7 +20,7 @@ function ForgotPassword() {
     setError(null)
 
     try {
-      const response = await fetch('http://localhost:8000/api/passwordReset/', {
+      const response = await fetch('/api/passwordReset/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

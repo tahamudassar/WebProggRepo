@@ -10,7 +10,7 @@ function CarPoolPosts({ post }) {
 
   useEffect(() => {
     // Fetch user details using the user_id from the post
-    fetch(`http://localhost:8000/api/user/${post.user}/`) // Assuming `post.user` holds the user_id
+    fetch(`/api/user/${post.user}/`) // Assuming `post.user` holds the user_id
       .then((response) => response.json())
       .then((data) => setUser(data))
       .catch((error) => console.error("Error fetching user details:", error));

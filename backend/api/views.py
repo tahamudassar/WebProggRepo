@@ -561,7 +561,7 @@ class PasswordResetRequestView(APIView):
 
         # Generate reset token
         token = default_token_generator.make_token(user)
-        reset_url = f"http://localhost:3000/reset-password/{token}"
+        reset_url = f"{settings.PASSWORD_RESET_FRONTEND_URL.rstrip('/')}/reset-password/{token}"
         
         # Send the reset email
         send_mail(

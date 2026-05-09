@@ -41,7 +41,7 @@ function BloodDonation({ community }) {
     console.log(token);
 
     // Send the FormData to the backend
-    fetch("http://localhost:8000/api/createBloodDonationPost", {
+    fetch("/api/createBloodDonationPost", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`, // Include the token in the header

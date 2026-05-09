@@ -56,7 +56,7 @@ function StudyGuide({ community }) { // Accept community as a prop
       const token = localStorage.getItem('accessToken');
       console.log(token)
       // Perform the fetch with FormData
-      fetch('http://localhost:8000/api/createStudyPost', {
+      fetch('/api/createStudyPost', {
         method: "POST",
         headers: {
           'Authorization': `Bearer ${token}`, // Include JWT token in header

@@ -39,7 +39,7 @@ const ResetPassword = ({ params }) => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8000/api/passwordResetConfirm/${token}/`, {
+      const response = await fetch(`/api/passwordResetConfirm/${token}/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -15,7 +15,7 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
   const handleLike = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch("http://localhost:8000/api/toggleLike/", {
+      const response = await fetch("/api/toggleLike/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
 
     if (!CommentBoxOpen) {
       try {
-        const response = await fetch(`http://localhost:8000/api/fetchComments/${postId}/`);
+        const response = await fetch(`/api/fetchComments/${postId}/`);
         if (response.ok) {
           const data = await response.json();
           setComments(data); // Set the fetched comments in the state

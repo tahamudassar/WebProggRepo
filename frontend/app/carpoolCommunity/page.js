@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import CarPoolPosts from "@/components/CarPoolDisplayPost";
 import DefaultLayout from "@/components/DefaultLayout";
 
-function page() {
+function Page() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/posts/carpool/");
+        const res = await fetch("/api/posts/carpool/");
         const data = await res.json();
         console.log("Fetched Data:", data); // Log the data
         setPosts(data);
@@ -31,4 +31,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
