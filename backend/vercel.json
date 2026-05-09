@@ -1,8 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "wsgi.py": {
+    "api/index.py": {
       "excludeFiles": "{node_modules/**,**/__pycache__/**,**/*.pyc,db.sqlite3,media/**}"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/index.py"
+    }
+  ]
 }
