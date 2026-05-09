@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from datetime import timedelta
 
 from pathlib import Path
+from urllib.parse import urlparse
 
 import dj_database_url
 import os
@@ -115,9 +116,16 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv('DATABASE_URL', '').strip().strip('"').strip("'")
 
 if DATABASE_URL:
+    if not urlparse(DATABASE_URL).scheme:
+        raise ValueError(
+            "DATABASE_URL must be a full database URL, for example "
+            "'postgresql://user:password@host:5432/database'. "
+            "Check for missing scheme, extra quotes, or leading spaces in Vercel."
+        )
+
     DATABASES = {
         'default': dj_database_url.parse(
             DATABASE_URL,
