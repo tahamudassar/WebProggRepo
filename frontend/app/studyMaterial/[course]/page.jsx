@@ -10,6 +10,7 @@ function StudyLinks({ params }) {
   const [filteredMaterial, setFilteredMaterial] = useState([]);
   const [isMounted, setIsMounted] = useState(false); // Track if the component has mounted
   const [isMounted2, setIsMounted2] = useState(false);
+  const course = params?.course;
 
   // Conditionally access params only after it's available
 
@@ -23,7 +24,7 @@ function StudyLinks({ params }) {
         const data = await response.json();
         console.log('data',data)
         setMaterial(data);
-        const decodedTitle = params?.course ? decodeURIComponent(params.course) : "";
+        const decodedTitle = course ? decodeURIComponent(course) : "";
         if (decodedTitle) {
         const filtered = data.filter((item) => item.title === decodedTitle);
         setFilteredMaterial(filtered);
@@ -35,7 +36,7 @@ function StudyLinks({ params }) {
 
     fetchData();
     setIsMounted(true);
-  }, []);
+  }, [course]);
 
   console.log(filteredMaterial)
 
