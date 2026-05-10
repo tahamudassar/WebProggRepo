@@ -1,2 +1,3 @@
 *.pyc
 run_both.sh
+backend/db.sqlite3
