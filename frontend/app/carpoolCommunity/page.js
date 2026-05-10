@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import CarPoolPosts from "@/components/CarPoolDisplayPost";
 import DefaultLayout from "@/components/DefaultLayout";
+import { apiUrl } from "@/lib/api";
 
 function Page() {
   const [posts, setPosts] = useState([]);
@@ -9,7 +10,7 @@ function Page() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("/api/posts/carpool/");
+        const res = await fetch(apiUrl("/api/posts/carpool/"));
         const data = await res.json();
         console.log("Fetched Data:", data); // Log the data
         setPosts(data);

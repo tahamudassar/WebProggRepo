@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Use next/navigation for app directory
 import { color } from 'framer-motion';
+import { apiUrl } from '@/lib/api';
 
 const ResetPassword = ({ params }) => {
   const [token, setToken] = useState(null); // Initialize the token state
@@ -39,7 +40,7 @@ const ResetPassword = ({ params }) => {
     };
 
     try {
-      const response = await fetch(`/api/passwordResetConfirm/${token}/`, {
+      const response = await fetch(apiUrl(`/api/passwordResetConfirm/${token}/`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

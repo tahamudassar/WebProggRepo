@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUserData } from '@/store'
+import { apiUrl } from '@/lib/api'
 
 function Signup() {
   const [showPassword, setShowPassword] = useState(false)
@@ -12,6 +13,7 @@ function Signup() {
     email: '',
     password: '',
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const setUser = useUserData((state) => state.setUser)
 
@@ -27,6 +29,7 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (isSubmitting) return
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -42,7 +45,8 @@ function Signup() {
     }
 
     try {
-      const response = await fetch('/api/register/', {
+      setIsSubmitting(true)
+      const response = await fetch(apiUrl('/api/register/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,6 +71,8 @@ function Signup() {
       }
     } catch (error) {
       console.error('An error occurred:', error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -74,7 +80,7 @@ function Signup() {
     <div className=' min-h-screen flex items-center justify-center pb-14 overflow-y-scroll no-scrollbar'>
       <div className="bg-[#242623] rounded-lg shadow-lg p-8 border-2 w-1/2">
         <h2 className="text-white text-3xl font-bold text-center">Create An Account</h2>
-        <form className="space-y-6 mt-6">
+        <form className="space-y-6 mt-6" onSubmit={handleSubmit}>
           <div>
             <label className="block text-gray-300">Username</label>
             <input
@@ -130,9 +136,9 @@ function Signup() {
           <button
             type="submit"
             className="w-full bg-black text-green-900 py-2 rounded-md font-semibold hover:bg-gray-700 hover:text-green-300"
-            onClick={handleSubmit}
+            disabled={isSubmitting}
           >
-            Create Account
+            {isSubmitting ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
       </div>

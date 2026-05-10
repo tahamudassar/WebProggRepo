@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUserData } from '@/store'
+import { apiUrl } from '@/lib/api'
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false)
@@ -25,7 +26,7 @@ function Login() {
     e.preventDefault()
 
     try {
-      const response = await fetch('/api/token/', {
+      const response = await fetch(apiUrl('/api/token/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

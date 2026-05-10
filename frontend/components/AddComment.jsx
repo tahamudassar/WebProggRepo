@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { apiUrl } from "@/lib/api";
 
 function AddComment({ postId, onNewComment, placeholder = "Add a comment..." }) {
   const [Comment, setComment] = useState("");
@@ -18,7 +19,7 @@ function AddComment({ postId, onNewComment, placeholder = "Add a comment..." }) 
       setIsLoading(true);
       const token = localStorage.getItem("accessToken");
 
-      const response = await fetch("/api/createComment/", {
+      const response = await fetch(apiUrl("/api/createComment/"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

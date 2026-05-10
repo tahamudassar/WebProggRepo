@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { apiUrl } from '@/lib/api'
 
 function ForgotPassword() {
   const [email, setEmail] = useState('')
@@ -20,7 +21,7 @@ function ForgotPassword() {
     setError(null)
 
     try {
-      const response = await fetch('/api/passwordReset/', {
+      const response = await fetch(apiUrl('/api/passwordReset/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

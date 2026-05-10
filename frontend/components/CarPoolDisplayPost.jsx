@@ -4,13 +4,14 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import PostCardHeader from "./PostCardHeader";
 import PostCardFooter from "./PostCardFooter";
+import { apiUrl } from "@/lib/api";
 
 function CarPoolPosts({ post }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     // Fetch user details using the user_id from the post
-    fetch(`/api/user/${post.user}/`) // Assuming `post.user` holds the user_id
+    fetch(apiUrl(`/api/user/${post.user}/`)) // Assuming `post.user` holds the user_id
       .then((response) => response.json())
       .then((data) => setUser(data))
       .catch((error) => console.error("Error fetching user details:", error));

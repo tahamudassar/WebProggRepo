@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import CustomCardHeader from "./CustomCardHeader";
 import CustomCardFooter from "./CustomCardFooter";
 import { useRouter } from 'next/navigation';
+import { apiUrl } from "@/lib/api";
 
 function CarPool({ community }) {
   const [formData, setFormData] = useState({
@@ -46,7 +47,7 @@ function CarPool({ community }) {
     console.log(token);
 
     // Send the FormData to the backend
-    fetch("/api/createCarpoolPost", {
+    fetch(apiUrl("/api/createCarpoolPost"), {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`, // Include the token in the header

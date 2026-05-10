@@ -5,6 +5,7 @@ import { Separator } from "./ui/separator";
 import { ThumbsUp, MessageSquareMore } from "lucide-react";
 import AddComment from "./AddComment";
 import DisplayComment from "./DisplayComment";
+import { apiUrl } from "@/lib/api";
 
 function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
   const [CommentBoxOpen, setCommentBoxOpen] = useState(false);
@@ -15,7 +16,7 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
   const handleLike = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch("/api/toggleLike/", {
+      const response = await fetch(apiUrl("/api/toggleLike/"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +45,7 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
 
     if (!CommentBoxOpen) {
       try {
-        const response = await fetch(`/api/fetchComments/${postId}/`);
+        const response = await fetch(apiUrl(`/api/fetchComments/${postId}/`));
         if (response.ok) {
           const data = await response.json();
           setComments(data); // Set the fetched comments in the state

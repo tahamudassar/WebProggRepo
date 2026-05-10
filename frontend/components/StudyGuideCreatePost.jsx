@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import CustomCardHeader from "./CustomCardHeader";
 import CustomCardFooter from "./CustomCardFooter";
 import { useRouter } from 'next/navigation';
+import { apiUrl } from "@/lib/api";
 
 function StudyGuide({ community }) { // Accept community as a prop
   const [formData, setFormData] = useState({
@@ -56,7 +57,7 @@ function StudyGuide({ community }) { // Accept community as a prop
       const token = localStorage.getItem('accessToken');
       console.log(token)
       // Perform the fetch with FormData
-      fetch('/api/createStudyPost', {
+      fetch(apiUrl('/api/createStudyPost'), {
         method: "POST",
         headers: {
           'Authorization': `Bearer ${token}`, // Include JWT token in header

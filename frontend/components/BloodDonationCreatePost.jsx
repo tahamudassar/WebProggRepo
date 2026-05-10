@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import CustomCardHeader from "./CustomCardHeader";
 import CustomCardFooter from "./CustomCardFooter";
 import { useRouter } from 'next/navigation';
+import { apiUrl } from "@/lib/api";
 
 function BloodDonation({ community }) {
   const [formData, setFormData] = useState({
@@ -41,7 +42,7 @@ function BloodDonation({ community }) {
     console.log(token);
 
     // Send the FormData to the backend
-    fetch("/api/createBloodDonationPost", {
+    fetch(apiUrl("/api/createBloodDonationPost"), {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`, // Include the token in the header

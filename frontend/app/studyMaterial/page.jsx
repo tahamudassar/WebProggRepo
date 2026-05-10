@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import { apiUrl } from "@/lib/api";
 
 function StudyMaterial() {
   const [material, setMaterial] = useState([]);
@@ -17,7 +18,7 @@ function StudyMaterial() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/materials/");
+        const response = await fetch(apiUrl("/api/materials/"));
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

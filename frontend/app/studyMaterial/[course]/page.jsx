@@ -3,6 +3,7 @@
 import DefaultLayout from "@/components/DefaultLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { apiUrl } from "@/lib/api";
 import React, { useEffect, useState } from "react";
 
 function StudyLinks({ params }) {
@@ -17,7 +18,7 @@ function StudyLinks({ params }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/materials/");
+        const response = await fetch(apiUrl("/api/materials/"));
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
