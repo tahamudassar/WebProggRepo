@@ -3,7 +3,7 @@
 import DefaultLayout from "@/components/DefaultLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { apiUrl } from "@/lib/api";
+import { apiUrl, asArray } from "@/lib/api";
 import React, { useEffect, useState } from "react";
 
 function StudyLinks({ params }) {
@@ -24,10 +24,11 @@ function StudyLinks({ params }) {
         }
         const data = await response.json();
         console.log('data',data)
-        setMaterial(data);
+        const materials = asArray(data);
+        setMaterial(materials);
         const decodedTitle = course ? decodeURIComponent(course) : "";
         if (decodedTitle) {
-        const filtered = data.filter((item) => item.title === decodedTitle);
+        const filtered = materials.filter((item) => item.title === decodedTitle);
         setFilteredMaterial(filtered);
       }
       } catch (error) {

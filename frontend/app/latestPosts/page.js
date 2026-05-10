@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';  // Import necessary hooks
 import StudyPosts from "@/components/StudyDisplayPost";
 import CarPoolPosts from "@/components/CarPoolDisplayPost";
 import BloodDonationPosts from "@/components/BloodDonationDisplayPost";
-import { apiUrl } from "@/lib/api";
+import { apiUrl, asArray } from "@/lib/api";
 
 function PostList() {
   const [posts, setPosts] = useState([]);  // State to hold posts
@@ -16,7 +16,7 @@ function PostList() {
       try {
         const response = await fetch(apiUrl('/api/posts/latest/'));  // Replace with your backend URL
         const data = await response.json();
-        setPosts(data);  // Set the posts state with the fetched data
+        setPosts(asArray(data));  // Set the posts state with the fetched data
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {

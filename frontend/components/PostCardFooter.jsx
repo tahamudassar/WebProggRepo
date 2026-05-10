@@ -5,7 +5,7 @@ import { Separator } from "./ui/separator";
 import { ThumbsUp, MessageSquareMore } from "lucide-react";
 import AddComment from "./AddComment";
 import DisplayComment from "./DisplayComment";
-import { apiUrl } from "@/lib/api";
+import { apiUrl, asArray } from "@/lib/api";
 
 function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
   const [CommentBoxOpen, setCommentBoxOpen] = useState(false);
@@ -48,7 +48,7 @@ function PostCardFooter({ postId, userId, likesCount, alreadyLiked }) {
         const response = await fetch(apiUrl(`/api/fetchComments/${postId}/`));
         if (response.ok) {
           const data = await response.json();
-          setComments(data); // Set the fetched comments in the state
+          setComments(asArray(data)); // Set the fetched comments in the state
         } else {
           const errorData = await response.json();
           console.error("Error fetching comments:", errorData);

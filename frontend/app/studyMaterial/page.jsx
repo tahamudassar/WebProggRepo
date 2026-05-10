@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { apiUrl } from "@/lib/api";
+import { apiUrl, asArray } from "@/lib/api";
 
 function StudyMaterial() {
   const [material, setMaterial] = useState([]);
@@ -23,9 +23,10 @@ function StudyMaterial() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setMaterial(data);
+        const materials = asArray(data);
+        setMaterial(materials);
 
-        const titles = data.map((item) => item.title);
+        const titles = materials.map((item) => item.title);
         const unique = [...new Set(titles)]; // Remove duplicates using Set
         setCourseNames(unique);
       } catch (error) {

@@ -12,3 +12,7 @@ export function apiUrl(path) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   return apiBaseUrl ? `${apiBaseUrl}${normalizedPath}` : normalizedPath;
 }
+
+export function asArray(value) {
+  return Array.isArray(value) ? value : [];
+}

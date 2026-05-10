@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import StudyPosts from "@/components/StudyDisplayPost";
 import DefaultLayout from "@/components/DefaultLayout";
-import { apiUrl } from "@/lib/api";
+import { apiUrl, asArray } from "@/lib/api";
 
 function Page() {
   const [posts, setPosts] = useState([]);
@@ -13,7 +13,7 @@ function Page() {
         const res = await fetch(apiUrl("/api/posts/study/"));
         const data = await res.json();
         console.log("Fetched Data:", data); // Log the data
-        setPosts(data);
+        setPosts(asArray(data));
       } catch (error) {
         console.error("Failed to fetch posts:", error.message);
       }
