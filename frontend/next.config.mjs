@@ -8,6 +8,7 @@ const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:800
 
 const nextConfig = {
   outputFileTracingRoot: __dirname,
+  skipTrailingSlashRedirect: true,
   async rewrites() {
     return [
       {
